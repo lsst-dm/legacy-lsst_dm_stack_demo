@@ -1,0 +1,32 @@
+cd /nfs/lsst/DC3/data/astrometry_net_data/imsim-2011-08-01-0/
+mkdir ../imsim-small-2012-03-04-0
+awk '{if(NR == 1 || (($2 > 1.6 && $2 < 2.) && ($3 > 4.2 && $3 < 4.6))) print $0}' stars.dat > ../imsim-small-2012-03-04-0/stars.dat
+awk '{if(NR == 1 || (($2 > 1.6 && $2 < 2.) && ($3 > 4.2 && $3 < 4.6))) print $0}' gal.dat > ../imsim-small-2012-03-04-0/gal.dat
+cd /nfs/lsst/DC3/data/astrometry_net_data/imsim-small-2012-03-04-0/
+awk '{if(NR > 1) printf("circle(%f,%f,10\")\n", $2,$3)}' stars.dat > stars.reg
+awk '{if(NR > 1) printf("circle(%f,%f,10\")\n", $2,$3)}' gal.dat > gal.reg
+md5sum -b *.dat >md5sums
+cd $LSST_DEVEL
+svn co http://astrometry.net/svn/tags/tarball-0.38/ astrometry.net-0.38
+cd astrometry.net-0.38/astrometry
+./configure
+make
+setup -r /nfs/lsst/home/krughoff/lsst/lsst_devel/Linux64/astrometry.net-0.38/astrometry
+#Modify pyfits_utils.py to use 2.5 style Exception, e:                
+#vi /lsst/home/krughoff/lsst/lsst_devel/Linux64/astrometry.net/astrometry/util/pyfits_utils.py                      
+setup numpy                      
+text2fits.py stars.dat stars1.fits                     
+text2fits.py gal.dat gals1.fits                     
+fitscopy stars1.fits"[col id(1K)=id;ra(1D)=raj2000;dec(1D)=decj2000;u1(1E)=uderived;g1(1E)=gderived;r1(1E)=rderived;i1(1E)=iderived;z1(1E)=zderived;y1(1E)=yderived;starnotgal(1X)=128;mura1(1E)=propermotionra;mudec1(1E)=propermotiondec;vrad1(1E)=radialvelocity;parallax1(1E)=parallax;variable(1X)=isvar]" stars2.fits                    
+fitscopy gals1.fits"[col id(1K)=galtileid;ra(1D)=raj2000;dec(1D)=decj2000;u1(1E)=uderived;g1(1E)=gderived;r1(1E)=rderived;i1(1E)=iderived;z1(1E)=zderived;y1(1E)=yderived;starnotgal(1X)=0;mura1(1E)=0;mudec1(1E)=0;vrad1(1E)=0;parallax1(1E)=0;variable(1X)=isagn]" gals2.fits                    
+cp stars2.fits both2.fits                     
+tabmerge gals2.fits+1 both2.fits+1                     
+fitscopy both2.fits"[col id;ra;dec;u=u1;g=g1;r=r1;i=i1;z=z1;y=y1;starnotgal;mura=mura1;mudec=mudec1;parallax=parallax1;variable]" both3.fits                    
+python preprocess_both.py                      
+setenv P 1203040                     
+build-index -i both4.fits -o index-${P}00.fits -I ${P}00 -P 0 -S r -n 100 -L 20 -E -j 0.4 -r 1 > build-00.log  
+#Only build levels 01 to 03.  It didn't like building level 04
+build-index -1 index-${P}00.fits -o index-${P}01.fits -I ${P}01 -P 1 -S r -L 20 -E -M -j 0.4 > build-01.log &
+build-index -1 index-${P}00.fits -o index-${P}02.fits -I ${P}02 -P 2 -S r -L 20 -E -M -j 0.4 > build-02.log &    
+build-index -1 index-${P}00.fits -o index-${P}03.fits -I ${P}03 -P 3 -S r -L 20 -E -M -j 0.4 > build-03.log     
+ls index-12030400* | awk '{printf("modhead %s+7 REFCAT 'imsim-stars-2012-03-04_gals-2012-03-04'\n",$1)}' | sh              

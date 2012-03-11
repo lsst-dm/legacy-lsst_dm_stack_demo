@@ -1,0 +1,20 @@
+A single chip of a simulated LSST focal plane (visit=886894611 raft=2,3
+sensor=1,1), including the necessary calibration products (bias, dark,
+flat), extracted for demonstration purposes.
+
+This data originated from imsim-TuesdayRuns/imSim-22July2011/PT1.2 ImSim
+run.
+
+To process it, set up astrometry_net.data:
+
+	eups --nolock declare -r \
+	/data/mjuric/astrometry_net_data/imsim-2011-08-01-0 \
+	astrometry_net_data imsim-2011-08-01-0
+
+	setup astrometry_net_data
+
+and run:
+
+	processCcdLsstSim.py lsstSim \
+	/data/imsim-TuesdayRuns/imSim-22July2011/PT1.2-onechip \
+	--id visit=886894611 raft=2,3 sensor=1,1 --out /data/mjuric/output3

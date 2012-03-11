@@ -1,0 +1,23 @@
+A sample dataset for running LSST DM stack
+==========================================
+
+This directory contains the input files and astrometric reference catalogs
+need to to process a simulated LSST CCD, using processCcdLsstSim.py script
+from the pipe_tasks package of LSST Data Management Stack.
+
+To run the example, do:
+
+	source $LSST_HOME/loadLSST.sh
+	setup pipe_tasks
+	./bin/demo.sh
+
+where $LSST_HOME isn the directory where your LSST DM stack resides.
+
+Look at the contents of demo.sh to get an understanding of how to run
+processCcd scripts.
+
+All outputs (calibrated images, raw lists of detected sources, etc.) will be
+stored in ./output subdirectory.  These are "raw" outputs, readable by other
+parts of the LSST pipeline.  In ./detected-sources.txt, you'll find an ASCII
+whitespace separated list of detected sources and their measured attributes. 
+This may be more useful for post-processing purposes.
