@@ -18,6 +18,9 @@ processCcd scripts.
 
 All outputs (calibrated images, raw lists of detected sources, etc.) will be
 stored in ./output subdirectory.  These are "raw" outputs, readable by other
-parts of the LSST pipeline.  In ./detected-sources.txt, you'll find an ASCII
-whitespace separated list of detected sources and their measured attributes. 
-This may be more useful for post-processing purposes.
+parts of the LSST pipeline. 
+
+In detected-sources.txt, you'll find an ASCII whitespace separated list of
+detected sources and their measured attributes.  This may be more useful for
+post-processing purposes.  This file can be compared to
+detected-sources.expected -- their contents should be identical.
