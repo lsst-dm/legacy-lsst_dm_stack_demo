@@ -1,81 +1,81 @@
 Reading both4.fits...
-Got 7001 stars
-Sweep 1: 178 stars
-Sweep 2: 174 stars
+Got 6828 stars
+Sweep 1: 171 stars
+Sweep 2: 169 stars
 Sweep 3: 169 stars
-Sweep 4: 166 stars
-Sweep 5: 163 stars
-Sweep 6: 160 stars
-Sweep 7: 158 stars
-Sweep 8: 157 stars
-Sweep 9: 155 stars
-Sweep 10: 153 stars
-Sweep 11: 153 stars
-Sweep 12: 151 stars
-Sweep 13: 149 stars
-Sweep 14: 148 stars
+Sweep 4: 169 stars
+Sweep 5: 169 stars
+Sweep 6: 168 stars
+Sweep 7: 167 stars
+Sweep 8: 166 stars
+Sweep 9: 165 stars
+Sweep 10: 160 stars
+Sweep 11: 155 stars
+Sweep 12: 153 stars
+Sweep 13: 152 stars
+Sweep 14: 151 stars
 Sweep 15: 148 stars
 Sweep 16: 146 stars
 Sweep 17: 145 stars
 Sweep 18: 145 stars
-Sweep 19: 144 stars
-Sweep 20: 144 stars
-Sweep 21: 144 stars
-Sweep 22: 144 stars
-Sweep 23: 144 stars
-Sweep 24: 144 stars
-Sweep 25: 144 stars
-Sweep 26: 144 stars
-Sweep 27: 144 stars
-Sweep 28: 144 stars
-Sweep 29: 143 stars
-Sweep 30: 143 stars
-Sweep 31: 141 stars
-Sweep 32: 141 stars
-Sweep 33: 140 stars
-Sweep 34: 136 stars
-Sweep 35: 132 stars
-Sweep 36: 129 stars
-Sweep 37: 126 stars
-Sweep 38: 124 stars
+Sweep 19: 145 stars
+Sweep 20: 145 stars
+Sweep 21: 145 stars
+Sweep 22: 143 stars
+Sweep 23: 141 stars
+Sweep 24: 141 stars
+Sweep 25: 140 stars
+Sweep 26: 140 stars
+Sweep 27: 139 stars
+Sweep 28: 139 stars
+Sweep 29: 137 stars
+Sweep 30: 136 stars
+Sweep 31: 136 stars
+Sweep 32: 135 stars
+Sweep 33: 132 stars
+Sweep 34: 130 stars
+Sweep 35: 128 stars
+Sweep 36: 126 stars
+Sweep 37: 123 stars
+Sweep 38: 120 stars
 Sweep 39: 117 stars
 Sweep 40: 109 stars
-Sweep 41: 107 stars
-Sweep 42: 103 stars
-Sweep 43: 100 stars
-Sweep 44: 90 stars
-Sweep 45: 84 stars
-Sweep 46: 79 stars
-Sweep 47: 71 stars
-Sweep 48: 69 stars
-Sweep 49: 62 stars
-Sweep 50: 52 stars
-Sweep 51: 49 stars
-Sweep 52: 39 stars
-Sweep 53: 35 stars
-Sweep 54: 31 stars
-Sweep 55: 27 stars
-Sweep 56: 24 stars
-Sweep 57: 16 stars
-Sweep 58: 12 stars
-Sweep 59: 12 stars
-Sweep 60: 8 stars
-Sweep 61: 6 stars
+Sweep 41: 103 stars
+Sweep 42: 96 stars
+Sweep 43: 89 stars
+Sweep 44: 83 stars
+Sweep 45: 80 stars
+Sweep 46: 72 stars
+Sweep 47: 60 stars
+Sweep 48: 58 stars
+Sweep 49: 52 stars
+Sweep 50: 44 stars
+Sweep 51: 36 stars
+Sweep 52: 31 stars
+Sweep 53: 27 stars
+Sweep 54: 23 stars
+Sweep 55: 22 stars
+Sweep 56: 16 stars
+Sweep 57: 14 stars
+Sweep 58: 13 stars
+Sweep 59: 10 stars
+Sweep 60: 9 stars
+Sweep 61: 8 stars
 Sweep 62: 6 stars
-Sweep 63: 6 stars
-Sweep 64: 5 stars
-Sweep 65: 5 stars
-Sweep 66: 5 stars
-Sweep 67: 4 stars
-Sweep 68: 3 stars
-Sweep 69: 3 stars
-Sweep 70: 2 stars
+Sweep 63: 4 stars
+Sweep 64: 3 stars
+Sweep 65: 3 stars
+Sweep 66: 3 stars
+Sweep 67: 2 stars
+Sweep 68: 1 stars
+Sweep 69: 1 stars
+Sweep 70: 1 stars
 Sweep 71: 1 stars
-Sweep 72: 0 stars
-Sweep 73: 0 stars
-Sweep 74: 0 stars
-Sweep 75: 0 stars
-Sweep 76: 0 stars
+Sweep 72: 1 stars
+Sweep 73: 1 stars
+Sweep 74: 1 stars
+Sweep 75: 1 stars
+Sweep 76: 1 stars
 Sweep 77: 0 stars
 Sweep 78: 0 stars
 Sweep 79: 0 stars
@@ -100,188 +100,188 @@ Sweep 97: 0 stars
 Sweep 98: 0 stars
 Sweep 99: 0 stars
 Sweep 100: 0 stars
-Total: 6955 stars
+Total: 6791 stars
 Writing output...
-Reading star kdtree /tmp/tmp.skdt.BBcwSY ...
-Will write to quad file /tmp/tmp.quad.o2RZqx and code file /tmp/tmp.code.P84tZ5
+Reading star kdtree /tmp/tmp.skdt.trM5AF ...
+Will write to quad file /tmp/tmp.quad.AS9SWL and code file /tmp/tmp.code.P0OGiS
 Nside=1760.  Nside^2=3097600.  Number of healpixes=37171200.  Healpix side length ~ 1.99883 arcmin.
-Star tree contains 6955 objects.
+Star tree contains 6791 objects.
 Healpix radius 84.8031 arcsec, quad scale 84 arcsec, total 170.491 arcsec
-Scanning 6955 input stars...
-Will check 178 healpixes.
+Scanning 6791 input stars...
+Will check 171 healpixes.
 Pass 1 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 174 quads (out of 178 healpixes) this pass.
-Made 174 quads so far.
+Made 168 quads (out of 171 healpixes) this pass.
+Made 168 quads so far.
 Merging quads...
 Pass 2 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 174 quads (out of 178 healpixes) this pass.
-Made 348 quads so far.
+Made 168 quads (out of 171 healpixes) this pass.
+Made 336 quads so far.
 Merging quads...
 Pass 3 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 174 quads (out of 178 healpixes) this pass.
-Made 522 quads so far.
+Made 168 quads (out of 171 healpixes) this pass.
+Made 504 quads so far.
 Merging quads...
 Pass 4 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 174 quads (out of 178 healpixes) this pass.
-Made 696 quads so far.
+Made 167 quads (out of 171 healpixes) this pass.
+Made 671 quads so far.
 Merging quads...
 Pass 5 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 172 quads (out of 178 healpixes) this pass.
-Made 868 quads so far.
+Made 167 quads (out of 171 healpixes) this pass.
+Made 838 quads so far.
 Merging quads...
 Pass 6 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 172 quads (out of 178 healpixes) this pass.
-Made 1040 quads so far.
+Made 167 quads (out of 171 healpixes) this pass.
+Made 1005 quads so far.
 Merging quads...
 Pass 7 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 172 quads (out of 178 healpixes) this pass.
-Made 1212 quads so far.
+Made 167 quads (out of 171 healpixes) this pass.
+Made 1172 quads so far.
 Merging quads...
 Pass 8 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 172 quads (out of 178 healpixes) this pass.
-Made 1384 quads so far.
+Made 167 quads (out of 171 healpixes) this pass.
+Made 1339 quads so far.
 Merging quads...
 Pass 9 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 170 quads (out of 178 healpixes) this pass.
-Made 1554 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 1505 quads so far.
 Merging quads...
 Pass 10 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 170 quads (out of 178 healpixes) this pass.
-Made 1724 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 1671 quads so far.
 Merging quads...
 Pass 11 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 170 quads (out of 178 healpixes) this pass.
-Made 1894 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 1837 quads so far.
 Merging quads...
 Pass 12 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 170 quads (out of 178 healpixes) this pass.
-Made 2064 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 2003 quads so far.
 Merging quads...
 Pass 13 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 169 quads (out of 178 healpixes) this pass.
-Made 2233 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 2169 quads so far.
 Merging quads...
 Pass 14 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 169 quads (out of 178 healpixes) this pass.
-Made 2402 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 2335 quads so far.
 Merging quads...
 Pass 15 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 169 quads (out of 178 healpixes) this pass.
-Made 2571 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 2501 quads so far.
 Merging quads...
 Pass 16 of 16.
-Trying 178 healpixes.
+Trying 171 healpixes.
 ...............................................................................
-Made 169 quads (out of 178 healpixes) this pass.
-Made 2740 quads so far.
+Made 166 quads (out of 171 healpixes) this pass.
+Made 2667 quads so far.
 Merging quads...
 Loosening reuse maximum to 9...
-Trying 108 healpixes.
-...............................................................................
-Made 5 quads (out of 108 healpixes) this pass.
+Trying 69 healpixes.
+....................................................................
+Made 2 quads (out of 69 healpixes) this pass.
 Loosening reuse maximum to 10...
-Trying 103 healpixes.
-...............................................................................
-Made 5 quads (out of 103 healpixes) this pass.
+Trying 67 healpixes.
+..................................................................
+Made 2 quads (out of 67 healpixes) this pass.
 Loosening reuse maximum to 11...
-Trying 98 healpixes.
-...............................................................................
-Made 5 quads (out of 98 healpixes) this pass.
+Trying 65 healpixes.
+................................................................
+Made 2 quads (out of 65 healpixes) this pass.
 Loosening reuse maximum to 12...
-Trying 93 healpixes.
-...............................................................................
-Made 5 quads (out of 93 healpixes) this pass.
+Trying 63 healpixes.
+..............................................................
+Made 2 quads (out of 63 healpixes) this pass.
 Loosening reuse maximum to 13...
-Trying 88 healpixes.
-...............................................................................
-Made 4 quads (out of 88 healpixes) this pass.
+Trying 61 healpixes.
+............................................................
+Made 2 quads (out of 61 healpixes) this pass.
 Loosening reuse maximum to 14...
-Trying 84 healpixes.
-...............................................................................
-Made 4 quads (out of 84 healpixes) this pass.
+Trying 59 healpixes.
+..........................................................
+Made 2 quads (out of 59 healpixes) this pass.
 Loosening reuse maximum to 15...
-Trying 80 healpixes.
-...............................................................................
-Made 4 quads (out of 80 healpixes) this pass.
+Trying 57 healpixes.
+........................................................
+Made 2 quads (out of 57 healpixes) this pass.
 Loosening reuse maximum to 16...
-Trying 76 healpixes.
-...........................................................................
-Made 4 quads (out of 76 healpixes) this pass.
+Trying 55 healpixes.
+......................................................
+Made 2 quads (out of 55 healpixes) this pass.
 Loosening reuse maximum to 17...
-Trying 72 healpixes.
-.......................................................................
-Made 2 quads (out of 72 healpixes) this pass.
+Trying 53 healpixes.
+....................................................
+Made 1 quads (out of 53 healpixes) this pass.
 Loosening reuse maximum to 18...
-Trying 70 healpixes.
-.....................................................................
-Made 2 quads (out of 70 healpixes) this pass.
+Trying 52 healpixes.
+...................................................
+Made 1 quads (out of 52 healpixes) this pass.
 Loosening reuse maximum to 19...
-Trying 68 healpixes.
-...................................................................
-Made 2 quads (out of 68 healpixes) this pass.
+Trying 51 healpixes.
+..................................................
+Made 1 quads (out of 51 healpixes) this pass.
 Loosening reuse maximum to 20...
-Trying 66 healpixes.
-.................................................................
-Made 2 quads (out of 66 healpixes) this pass.
+Trying 50 healpixes.
+.................................................
+Made 1 quads (out of 50 healpixes) this pass.
 Writing quads...
-Used 7.11492 s user, 0.344948 s system (7.45987 s total), 7.51649 s wall time since last check
+Used 4.5853 s user, 0.017997 s system (4.6033 s total), 4.61114 s wall time since last check
 Done.
-codetree: building KD tree for /tmp/tmp.code.P84tZ5
-       will write KD tree file /tmp/tmp.ckdt.8vIaVU
+codetree: building KD tree for /tmp/tmp.code.P0OGiS
+       will write KD tree file /tmp/tmp.ckdt.CosnH8
 Reading codes...
-Read 2784 codes.
+Read 2687 codes.
 Building tree...
 Done
-Writing code KD tree to /tmp/tmp.ckdt.8vIaVU...
+Writing code KD tree to /tmp/tmp.ckdt.CosnH8...
 Unpermute-stars...
-Unpermuting stars from /tmp/tmp.skdt.BBcwSY and /tmp/tmp.quad.o2RZqx to /tmp/tmp.skdt2.pJ1PTJ and /tmp/tmp.quad2.yamwSy
-Reading star tree from /tmp/tmp.skdt.BBcwSY ...
-Reading quadfile from /tmp/tmp.quad.o2RZqx ...
-Writing quadfile to /tmp/tmp.quad2.yamwSy ...
+Unpermuting stars from /tmp/tmp.skdt.trM5AF and /tmp/tmp.quad.AS9SWL to /tmp/tmp.skdt2.NZlk8o and /tmp/tmp.quad2.KPAhzF
+Reading star tree from /tmp/tmp.skdt.trM5AF ...
+Reading quadfile from /tmp/tmp.quad.AS9SWL ...
+Writing quadfile to /tmp/tmp.quad2.KPAhzF ...
 Writing quads...
 ...............................................................................
-Writing star kdtree to /tmp/tmp.skdt2.pJ1PTJ ...
+Writing star kdtree to /tmp/tmp.skdt2.NZlk8o ...
 Permuting tag-along table...
 Unpermute-quads...
-Unpermuting quads from /tmp/tmp.quad2.yamwSy and /tmp/tmp.ckdt.8vIaVU to /tmp/tmp.quad3.aSsQ3c and /tmp/tmp.ckdt2.Nr4aYn
-Reading code tree from /tmp/tmp.ckdt.8vIaVU ...
-Reading quads from /tmp/tmp.quad2.yamwSy ...
-Writing quads to /tmp/tmp.quad3.aSsQ3c ...
-Writing code kdtree to /tmp/tmp.ckdt2.Nr4aYn ...
-Merging /tmp/tmp.quad3.aSsQ3c and /tmp/tmp.ckdt2.Nr4aYn and /tmp/tmp.skdt2.pJ1PTJ to index-120304000.fits
-Reading code tree from /tmp/tmp.ckdt2.Nr4aYn ...
+Unpermuting quads from /tmp/tmp.quad2.KPAhzF and /tmp/tmp.ckdt.CosnH8 to /tmp/tmp.quad3.Oh2wAc and /tmp/tmp.ckdt2.bm9T4V
+Reading code tree from /tmp/tmp.ckdt.CosnH8 ...
+Reading quads from /tmp/tmp.quad2.KPAhzF ...
+Writing quads to /tmp/tmp.quad3.Oh2wAc ...
+Writing code kdtree to /tmp/tmp.ckdt2.bm9T4V ...
+Merging /tmp/tmp.quad3.Oh2wAc and /tmp/tmp.ckdt2.bm9T4V and /tmp/tmp.skdt2.NZlk8o to index-120319000.fits
+Reading code tree from /tmp/tmp.ckdt2.bm9T4V ...
 Ok.
-Reading star tree from /tmp/tmp.skdt2.pJ1PTJ ...
+Reading star tree from /tmp/tmp.skdt2.NZlk8o ...
 Ok.
-Reading quads from /tmp/tmp.quad3.aSsQ3c ...
+Reading quads from /tmp/tmp.quad3.Oh2wAc ...
 Ok.

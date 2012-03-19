@@ -7,10 +7,10 @@ test "$(type -t setup)" == "function" || { export SHELL=/bin/bash; source $LSST_
 set -e
 
 # Tell the stack where to find astrometric reference catalogs
-setup -v -r ./astrometry_net_data astrometry_net_data
+setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt
-processCcdLsstSim.py lsstSim input --id visit=886894611 raft=2,3 sensor=1,1 --out output
+processCcdLsstSim.py lsstSim input --id visit=88689461 raft=2,3 sensor=1,1 --out output
 ./bin/export-results output > detected-sources.txt
 
 echo

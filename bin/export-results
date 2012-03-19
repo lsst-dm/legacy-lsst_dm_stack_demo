@@ -12,7 +12,7 @@ outputdir=sys.argv[1]
 
 # Load sources
 butler = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outputdir)).create()
-srcs = butler.get("src", visit=886894611, raft="2,3", sensor="1,1")
+srcs = butler.get("src", visit=88689461, raft="2,3", sensor="1,1")
 realSources = srcs.getSources()
 
 # Extract interesting columns and construct dtype
