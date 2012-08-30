@@ -7,7 +7,7 @@ Overview
 --------
 
 This package contains the input files and astrometric reference catalogs
-need to to process several SDSS frames, using the processCcdSdss.py script
+needed to process several SDSS frames, using the processCcdSdss.py script
 from the pipe_tasks package of the LSST Data Management Stack.
 
 Usage
@@ -32,7 +32,7 @@ other parts of the LSST pipeline.
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
 post-processing purposes.  This file can be compared to
-detected-sources.expected -- their contents should be identical.
+detected-sources.txt.expected -- their contents should be identical.
 
 Included Data
 -------------
