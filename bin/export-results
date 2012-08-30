@@ -1,33 +1,46 @@
 #!/usr/bin/env python
 
-import sys;
-import numpy as np
+import sys
 import lsst.daf.persistence as dafPersist
-from lsst.obs.lsstSim import LsstSimMapper
+from lsst.obs.sdss import SdssMapper
 
 if len(sys.argv) != 2:
 	print >>sys.stderr, "Usage: export-results <output_directory>"
 	exit(1);
-outputdir=sys.argv[1]
+outputdir = sys.argv[1]
 
-# Load sources
-butler = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outputdir)).create()
-srcs = butler.get("src", visit=88689461, raft="2,3", sensor="1,1")
-realSources = srcs.getSources()
+# Load sources and print interesting columns
 
-# Extract interesting columns and construct dtype
-cols = "AmpExposureId ApDia ApFlux ApFluxErr FilterId FlagForDetection Id InstFlux InstFluxErr Ixx IxxErr Ixy IxyErr Iyy IyyErr ModelFlux ModelFluxErr PsfFlux PsfFluxErr SourceId TaiMidPoint TaiRange XAstrom XAstromErr YAstrom YAstromErr".split()
-s = realSources[0]
-type_map = { int: 'i8', float: 'f8' }
-dtype = [ (col, type_map[type(getattr(s, 'get'+col)())] ) for col in cols ]
+colFormat = ("id", "%2d",
+        "coord.ra", "%10.6f",
+        "coord.dec", "%10.6f",
+#        "flags.negative", "%1d",
+#        "flags.badcentroid", "%1d",
+        "centroid.sdss.x", "%9.3f",
+        "centroid.sdss.y", "%9.3f",
+#        "centrold.sdss.flags", "%1d",
+#        "flags.pixel.edge", "%1d",
+#        "flags.pixel.interpolated.any", "%1d",
+#        "flags.pixel.interpolated.center", "%1d",
+#        "flags.pixel.saturated.any", "%1d",
+#        "flags.pixel.saturated.center", "%1d",
+#        "shape.sdss.ixx", "%8.2f",
+#        "shape.sdss.ixy", "%8.2f",
+#        "shape.sdss.iyy", "%8.2f",
+#        "shape.sdss.flags", "%1d",
+        )
 
-# Convert SourceSet to ndarray
-table = np.empty(realSources.size(), dtype=dtype)
-for k in xrange(len(table)):
-	table[k] = tuple( getattr(realSources[k], 'get'+c)() for c in cols )
 
-# Print it out (TODO: allow option to store to FITS)
-fmt = "%2d %1.0f %10.2f %8.2f %2d %2d %2d %10.2f %8.2f     %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f   %10.2f %8.2f %10.2f %8.2f   %2d    %13.6f %7.3f   %9.3f %5.3f %9.3f %5.3f"
-print '# ' + ' '.join(cols)
-for row in table:
-	print fmt % tuple((row[col] for col in row.dtype.names))
+cols = [colFormat[2 * i] for i in range(len(colFormat)//2)]
+print '#' + ' '.join(cols)
+fmt = ' '.join([colFormat[2 * i + 1] for i in range(len(colFormat)//2)])
+
+butler = dafPersist.ButlerFactory(mapper=SdssMapper(root=outputdir)).create()
+for filter in ('u', 'g', 'r', 'i', 'z'):
+    srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
+    print srcs.schema
+    for s in srcs:
+	print fmt % tuple((s[col] for col in cols))
+    srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
+    for s in srcs:
+	print fmt % tuple((s[col] for col in cols))
