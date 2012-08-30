@@ -3,6 +3,7 @@
 import sys
 import lsst.daf.persistence as dafPersist
 from lsst.obs.sdss import SdssMapper
+from lsst.afw.geom import Angle
 
 if len(sys.argv) != 2:
 	print >>sys.stderr, "Usage: export-results <output_directory>"
@@ -11,36 +12,78 @@ outputdir = sys.argv[1]
 
 # Load sources and print interesting columns
 
-colFormat = ("id", "%2d",
-        "coord.ra", "%10.6f",
-        "coord.dec", "%10.6f",
-#        "flags.negative", "%1d",
-#        "flags.badcentroid", "%1d",
-        "centroid.sdss.x", "%9.3f",
-        "centroid.sdss.y", "%9.3f",
-#        "centrold.sdss.flags", "%1d",
-#        "flags.pixel.edge", "%1d",
-#        "flags.pixel.interpolated.any", "%1d",
-#        "flags.pixel.interpolated.center", "%1d",
-#        "flags.pixel.saturated.any", "%1d",
-#        "flags.pixel.saturated.center", "%1d",
-#        "shape.sdss.ixx", "%8.2f",
-#        "shape.sdss.ixy", "%8.2f",
-#        "shape.sdss.iyy", "%8.2f",
-#        "shape.sdss.flags", "%1d",
+cols = ("id", 
+        "coord.ra",
+        "coord.dec",
+        "flags.negative",
+        "flags.badcentroid",
+        "flags.pixel.edge",
+        "flags.pixel.interpolated.any",
+        "flags.pixel.interpolated.center",
+        "flags.pixel.saturated.any",
+        "flags.pixel.saturated.center",
+        "centroid.sdss.x",
+        "centroid.sdss.y",
+        "centroid.sdss.err.xx",
+        "centroid.sdss.err.yy",
+        "centroid.gaussian.x",
+        "centroid.gaussian.y",
+        "centroid.gaussian.err.xx",
+        "centroid.gaussian.err.yy",
+        "shape.sdss.ixx",
+        "shape.sdss.ixy",
+        "shape.sdss.iyy",
+        "shape.sdss.err.ixx",
+        "shape.sdss.err.ixy",
+        "shape.sdss.err.iyy",
+        "shape.sdss.flags",
+        "flux.gaussian",
+        "flux.gaussian.err",
+        "flux.psf",
+        "flux.psf.err",
+        "flux.sinc",
+        "flux.sinc.err",
+        "multishapelet.exp.flux",
+        "multishapelet.exp.flux.err",
+        "multishapelet.dev.flux",
+        "multishapelet.dev.flux.err",
+        "multishapelet.combo.flux",
+        "multishapelet.combo.flux.err",
+        "classification.extendedness",
+        "aperturecorrection",
+        "aperturecorrection.err",
         )
 
-
-cols = [colFormat[2 * i] for i in range(len(colFormat)//2)]
 print '#' + ' '.join(cols)
-fmt = ' '.join([colFormat[2 * i + 1] for i in range(len(colFormat)//2)])
+
+extractors = []
+for col in cols:
+    if col.endswith(".ra") or col.endswith(".dec"):
+        extractors.append(lambda s, c=col: Angle(s.get(c)).asDegrees())
+    elif col.endswith(".xx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
+    elif col.endswith(".yy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
+    elif col.endswith(".err.ixx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
+    elif col.endswith(".err.ixy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
+    elif col.endswith(".err.iyy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[2][2])
+    elif col.endswith(".ixx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxx())
+    elif col.endswith(".ixy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxy())
+    elif col.endswith(".iyy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIyy())
+    else:
+        extractors.append(lambda s, c=col: s.get(c))
 
 butler = dafPersist.ButlerFactory(mapper=SdssMapper(root=outputdir)).create()
-for filter in ('u', 'g', 'r', 'i', 'z'):
+for filter in "ugriz":
     srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
-    print srcs.schema
     for s in srcs:
-	print fmt % tuple((s[col] for col in cols))
+        print ' '.join([str(e(s)) for e in extractors])
     srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
     for s in srcs:
-	print fmt % tuple((s[col] for col in cols))
+        print ' '.join([str(e(s)) for e in extractors])
