@@ -1,5 +1,5 @@
-A sample dataset for running LSST DM stack
-==========================================
+A sample dataset for running the LSST DM stack
+==============================================
 
 Maintainer: Mario Juric <mjuric@lsst.org>
 
@@ -7,8 +7,8 @@ Overview
 --------
 
 This package contains the input files and astrometric reference catalogs
-need to to process a simulated LSST CCD, using processCcdLsstSim.py script
-from pipe_tasks package of LSST Data Management Stack.
+need to to process several SDSS frames, using the processCcdSdss.py script
+from the pipe_tasks package of the LSST Data Management Stack.
 
 Usage
 -----
@@ -17,16 +17,17 @@ To run the example, do::
 
 	source $LSST_HOME/loadLSST.sh
 	setup pipe_tasks
+	setup obs_sdss
 	./bin/demo.sh
 
-where $LSST_HOME isn the directory where your LSST DM stack resides.
+where $LSST_HOME is the directory where your LSST DM stack resides.
 
 Look at the contents of demo.sh to get an understanding of how to run
 processCcd scripts.
 
-All outputs (calibrated images, raw lists of detected sources, etc.) will be
-stored in ./output subdirectory.  These are "raw" outputs, readable by other
-parts of the LSST pipeline. 
+All outputs (calibrated images, FITS tables of detected sources, etc.) will be
+stored in the ./output subdirectory.  These are "raw" outputs, readable by
+other parts of the LSST pipeline. 
 
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
@@ -36,39 +37,20 @@ detected-sources.expected -- their contents should be identical.
 Included Data
 -------------
 
-The package comes with raw data and all calibration products needed to
-reduce a single chip (sensor=1,1 raft=2,3 visit=88689461) ImSim image.
+The package comes with raw data for run 4192 camcol 4 field 300 and run 6377
+camcol 4 field 399 from SDSS stripe 82.  This is 10 frames (one in each of five
+filters for the two fields).
 
 input
-  A single chip of a simulated LSST focal plane (sensor=1,1 raft=2,3
-  visit=88689461), including the necessary calibration products (bias, dark,
-  flat), extracted for demonstration purposes.  Note: see Notes (below) for
-  how to find the ImSim version used to generate it.
+  This directory contains the fpC files with calibrated pixels, fpM files with
+  masks, and asTrans/tsField/psField calibration data.
 
 astrometry_net_data
-  Astrometric reference catalog for astrometry.net, pared down to the area
-  covered by the one chip.
-
-Notes
------
-* The revision of the raytrace used to make a particular raw image is
-  supposed to be recorded in the header with the fits key 'VERSION'.  E.g,
-  from the latest version of lsst_dm_stack_demo::
-
-    zcat input/raw/v88689461-fr/E000/R23/S11/imsim_88689461_R23_S11_C00_E000.fits.gz \
-      fold | head -n450 | grep VERSION
-
-  we get VERSION = 25681
-
-TODO
-----
-* Need to document how to generate pared down astrometry.net reference
-  catalogs from the master astrometric catalogs.
+  Astrometric and photometric reference catalog for astrometry.net, pared down
+  to the area required for the above fields.  This catalog is used only for
+  estimating photometric zeropoints; the astrometry is not re-determined.
 
 Changelog
 ---------
-* 2012/03/19, krughoff@astro.washington.edu: updated the input to an image
-  generated with ImSim rev. 25681.
-
-* 2012/03/11, mjuric@lsst.org: created the initial dataset, using a randomly
-  selected chip from imsim-TuesdayRuns/imSim-22July2011/PT1.2
+* 2012/08/30, ktl@slac.stanford.edu: created the initial dataset and updated
+  the scripts.
