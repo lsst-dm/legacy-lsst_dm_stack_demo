@@ -11,7 +11,7 @@ set -e
 setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt
-processCcdSdss.py sdss input --id run=4192 filter=u^g^r^i^z camcol=4 field=300 --id run=6377 filter=u^g^r^i^z camcol=4 field=399 --out output
+processCcdSdss.py input --id run=4192 filter=u^g^r^i^z camcol=4 field=300 --id run=6377 filter=u^g^r^i^z camcol=4 field=399 --output output
 ./bin/export-results output > detected-sources.txt
 
 echo
