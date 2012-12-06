@@ -1,33 +1,89 @@
 #!/usr/bin/env python
 
-import sys;
-import numpy as np
+import sys
 import lsst.daf.persistence as dafPersist
-from lsst.obs.lsstSim import LsstSimMapper
+from lsst.obs.sdss import SdssMapper
+from lsst.afw.geom import Angle
 
 if len(sys.argv) != 2:
 	print >>sys.stderr, "Usage: export-results <output_directory>"
 	exit(1);
-outputdir=sys.argv[1]
+outputdir = sys.argv[1]
 
-# Load sources
-butler = dafPersist.ButlerFactory(mapper=LsstSimMapper(root=outputdir)).create()
-srcs = butler.get("src", visit=88689461, raft="2,3", sensor="1,1")
-realSources = srcs.getSources()
+# Load sources and print interesting columns
 
-# Extract interesting columns and construct dtype
-cols = "AmpExposureId ApDia ApFlux ApFluxErr FilterId FlagForDetection Id InstFlux InstFluxErr Ixx IxxErr Ixy IxyErr Iyy IyyErr ModelFlux ModelFluxErr PsfFlux PsfFluxErr SourceId TaiMidPoint TaiRange XAstrom XAstromErr YAstrom YAstromErr".split()
-s = realSources[0]
-type_map = { int: 'i8', float: 'f8' }
-dtype = [ (col, type_map[type(getattr(s, 'get'+col)())] ) for col in cols ]
+cols = ("id", 
+        "coord.ra",
+        "coord.dec",
+        "flags.negative",
+        "flags.badcentroid",
+        "flags.pixel.edge",
+        "flags.pixel.interpolated.any",
+        "flags.pixel.interpolated.center",
+        "flags.pixel.saturated.any",
+        "flags.pixel.saturated.center",
+        "centroid.sdss.x",
+        "centroid.sdss.y",
+        "centroid.sdss.err.xx",
+        "centroid.sdss.err.yy",
+        "centroid.gaussian.x",
+        "centroid.gaussian.y",
+        "centroid.gaussian.err.xx",
+        "centroid.gaussian.err.yy",
+        "shape.sdss.ixx",
+        "shape.sdss.ixy",
+        "shape.sdss.iyy",
+        "shape.sdss.err.ixx",
+        "shape.sdss.err.ixy",
+        "shape.sdss.err.iyy",
+        "shape.sdss.flags",
+        "flux.gaussian",
+        "flux.gaussian.err",
+        "flux.psf",
+        "flux.psf.err",
+        "flux.sinc",
+        "flux.sinc.err",
+        "multishapelet.exp.flux",
+        "multishapelet.exp.flux.err",
+        "multishapelet.dev.flux",
+        "multishapelet.dev.flux.err",
+        "multishapelet.combo.flux",
+        "multishapelet.combo.flux.err",
+        "classification.extendedness",
+        "aperturecorrection",
+        "aperturecorrection.err",
+        )
 
-# Convert SourceSet to ndarray
-table = np.empty(realSources.size(), dtype=dtype)
-for k in xrange(len(table)):
-	table[k] = tuple( getattr(realSources[k], 'get'+c)() for c in cols )
+print '#' + ' '.join(cols)
 
-# Print it out (TODO: allow option to store to FITS)
-fmt = "%2d %1.0f %10.2f %8.2f %2d %2d %2d %10.2f %8.2f     %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f   %10.2f %8.2f %10.2f %8.2f   %2d    %13.6f %7.3f   %9.3f %5.3f %9.3f %5.3f"
-print '# ' + ' '.join(cols)
-for row in table:
-	print fmt % tuple((row[col] for col in row.dtype.names))
+extractors = []
+for col in cols:
+    if col.endswith(".ra") or col.endswith(".dec"):
+        extractors.append(lambda s, c=col: Angle(s.get(c)).asDegrees())
+    elif col.endswith(".xx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
+    elif col.endswith(".yy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
+    elif col.endswith(".err.ixx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
+    elif col.endswith(".err.ixy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
+    elif col.endswith(".err.iyy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[2][2])
+    elif col.endswith(".ixx"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxx())
+    elif col.endswith(".ixy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxy())
+    elif col.endswith(".iyy"):
+        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIyy())
+    else:
+        extractors.append(lambda s, c=col: s.get(c))
+
+butler = dafPersist.ButlerFactory(mapper=SdssMapper(root=outputdir)).create()
+for filter in "ugriz":
+    srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
+    for s in srcs:
+        print ' '.join([str(e(s)) for e in extractors])
+    srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
+    for s in srcs:
+        print ' '.join([str(e(s)) for e in extractors])
