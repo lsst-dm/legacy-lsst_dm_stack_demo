@@ -81,9 +81,11 @@ for col in cols:
 
 butler = dafPersist.ButlerFactory(mapper=SdssMapper(root=outputdir)).create()
 for filter in "ugriz":
-    srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
-    for s in srcs:
-        print ' '.join([str(e(s)) for e in extractors])
-    srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
-    for s in srcs:
-        print ' '.join([str(e(s)) for e in extractors])
+    if butler.datasetExists("src", run=4192, filter=filter, field=300, camcol=4):
+        srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
+        for s in srcs:
+            print ' '.join([str(e(s)) for e in extractors])
+    if butler.datasetExists("src", run=6377, filter=filter, field=399, camcol=4):
+        srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
+        for s in srcs:
+            print ' '.join([str(e(s)) for e in extractors])
