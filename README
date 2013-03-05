@@ -18,7 +18,7 @@ To run the example, do::
 	source $LSST_HOME/loadLSST.sh
 	setup pipe_tasks
 	setup obs_sdss
-	./bin/demo.sh
+	./bin/demo.sh  (or: ./bin/demo_small.sh  if local memory is constrained)
 
 where $LSST_HOME is the directory where your LSST DM stack resides.
 
@@ -32,7 +32,10 @@ other parts of the LSST pipeline.
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
 post-processing purposes.  This file can be compared to
-detected-sources.txt.expected -- their contents should be identical.
+detected-sources.txt.expected -- their contents should be identical.  
+
+If you ran demo_small.sh then the corresponding comparison file is named: 
+detected-sources.txt.expected_small.
 
 Included Data
 -------------
@@ -54,3 +57,5 @@ Changelog
 ---------
 * 2012/08/30, ktl@slac.stanford.edu: created the initial dataset and updated
   the scripts.
+
+* 2013/02/21, robyn@lsst.org: reduced number of filters used in order to work around a hard limit in LSST buildbot virtual machines for (Mem + Swap) = 8Gb.
