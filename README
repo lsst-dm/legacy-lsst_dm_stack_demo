@@ -59,3 +59,6 @@ Changelog
   the scripts.
 
 * 2013/02/21, robyn@lsst.org: reduced number of filters used in order to work around a hard limit in LSST buildbot virtual machines for (Mem + Swap) = 8Gb.
+
+* 2013/04/11, robyn@lsst.org: replaced output variables: aperturecorrection and aperturecorrection.err with correctfluxes.apcor and correctfluxes.apcor.flags;
+updated the sample output files.

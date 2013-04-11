@@ -50,8 +50,8 @@ cols = ("id",
         "multishapelet.combo.flux",
         "multishapelet.combo.flux.err",
         "classification.extendedness",
-        "aperturecorrection",
-        "aperturecorrection.err",
+        "correctfluxes.apcorr",
+        "correctfluxes.apcorr.flags",
         )
 
 print '#' + ' '.join(cols)
