@@ -62,3 +62,5 @@ Changelog
 
 * 2013/04/11, robyn@lsst.org: replaced output variables: aperturecorrection and aperturecorrection.err with correctfluxes.apcor and correctfluxes.apcor.flags;
 updated the sample output files.
+
+* 2013/06/07, robyn@lsst.org: removed multishapelet output variables since their configuration and use is no longer defined in the default configuration.
