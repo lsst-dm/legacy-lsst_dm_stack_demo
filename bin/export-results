@@ -6,8 +6,8 @@ from lsst.obs.sdss import SdssMapper
 from lsst.afw.geom import Angle
 
 if len(sys.argv) != 2:
-	print >>sys.stderr, "Usage: export-results <output_directory>"
-	exit(1);
+    print >>sys.stderr, "Usage: export-results <output_directory>"
+    exit(1);
 outputdir = sys.argv[1]
 
 # Load sources and print interesting columns
@@ -71,11 +71,10 @@ for col in cols:
 
 butler = dafPersist.Butler(outputdir)
 for filter in "ugriz":
-    if butler.datasetExists("src", run=4192, filter=filter, field=300, camcol=4):
-        srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
-        for s in srcs:
-            print ' '.join([str(e(s)) for e in extractors])
-    if butler.datasetExists("src", run=6377, filter=filter, field=399, camcol=4):
-        srcs = butler.get("src", run=6377, filter=filter, field=399, camcol=4)
-        for s in srcs:
-            print ' '.join([str(e(s)) for e in extractors])
+    for dataId in (dict(run=4192, filter=filter, field=300, camcol=4),
+                   dict(run=6377, filter=filter, field=399, camcol=4),
+                   ):
+        if butler.datasetExists("src", **dataId):
+            srcs = butler.get("src", **dataId)
+            for s in srcs:
+                print ' '.join([str(e(s)) for e in extractors])
