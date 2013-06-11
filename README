@@ -64,3 +64,6 @@ Changelog
 updated the sample output files.
 
 * 2013/06/07, robyn@lsst.org: removed multishapelet output variables since their configuration and use is no longer defined in the default configuration.
+
+* 2013/06/11, robyn@lsst.org: updated benchmark files.
+
