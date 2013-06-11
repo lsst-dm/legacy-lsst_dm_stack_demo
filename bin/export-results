@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-
+import re
 import sys
+import numpy as np
 import lsst.daf.persistence as dafPersist
 from lsst.obs.sdss import SdssMapper
 from lsst.afw.geom import Angle
@@ -26,12 +27,12 @@ cols = ("id",
         "centroid.sdss.y",
         "centroid.sdss.err.xx",
         "centroid.sdss.err.yy",
-        "shape.sdss.ixx",
-        "shape.sdss.ixy",
-        "shape.sdss.iyy",
-        "shape.sdss.err.ixx",
-        "shape.sdss.err.ixy",
-        "shape.sdss.err.iyy",
+        "shape.sdss.xx",
+        "shape.sdss.xy",
+        "shape.sdss.yy",
+        "shape.sdss.err.xx",
+        "shape.sdss.err.xy",
+        "shape.sdss.err.yy",
         "shape.sdss.flags",
         "flux.gaussian",
         "flux.gaussian.err",
@@ -46,35 +47,30 @@ cols = ("id",
 
 print '#' + ' '.join(cols)
 
-extractors = []
-for col in cols:
-    if col.endswith(".ra") or col.endswith(".dec"):
-        extractors.append(lambda s, c=col: Angle(s.get(c)).asDegrees())
-    elif col.endswith(".xx"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
-    elif col.endswith(".yy"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
-    elif col.endswith(".err.ixx"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[0][0])
-    elif col.endswith(".err.ixy"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[1][1])
-    elif col.endswith(".err.iyy"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c)[2][2])
-    elif col.endswith(".ixx"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxx())
-    elif col.endswith(".ixy"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIxy())
-    elif col.endswith(".iyy"):
-        extractors.append(lambda s, c=col[0:col.rindex('.')]: s.get(c).getIyy())
-    else:
-        extractors.append(lambda s, c=col: s.get(c))
-
 butler = dafPersist.Butler(outputdir)
 for filter in "ugriz":
     for dataId in (dict(run=4192, filter=filter, field=300, camcol=4),
                    dict(run=6377, filter=filter, field=399, camcol=4),
                    ):
-        if butler.datasetExists("src", **dataId):
-            srcs = butler.get("src", **dataId)
-            for s in srcs:
-                print ' '.join([str(e(s)) for e in extractors])
+        if not butler.datasetExists("src", **dataId):
+            continue
+
+        srcs = butler.get("src", **dataId)
+
+        vecs = []
+        for col in cols:
+            if col.endswith(".ra") or col.endswith(".dec"):
+                v = np.rad2deg(srcs.get(col))
+            elif re.search(r"\.err\.(xx|yy|xy)$", col):
+                field, which = re.search(r"^(.*\.err)\.(xx|yy|xy)$", col).groups()
+                key = srcs.schema.find(field).key
+                key = key[0,0] if which == "xx" else key[1,1] if which == "yy" else key[0, 1]
+
+                v = srcs.get(key)
+            else:
+                v = srcs.get(col)
+
+            vecs.append(v)
+
+        for vals in zip(*vecs):
+            print ' '.join([str(el) for el in vals])
