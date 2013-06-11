@@ -69,7 +69,7 @@ for col in cols:
     else:
         extractors.append(lambda s, c=col: s.get(c))
 
-butler = dafPersist.ButlerFactory(mapper=SdssMapper(root=outputdir)).create()
+butler = dafPersist.Butler(outputdir)
 for filter in "ugriz":
     if butler.datasetExists("src", run=4192, filter=filter, field=300, camcol=4):
         srcs = butler.get("src", run=4192, filter=filter, field=300, camcol=4)
