@@ -65,6 +65,8 @@ updated the sample output files.
 
 * 2013/06/07, robyn@lsst.org: removed multishapelet output variables since their configuration and use is no longer defined in the default configuration.
 
-* 2013/06/11, robyn@lsst.org: updated benchmark files for v7_1 Release.
+* 2013/06/11, robyn@lsst.org: updated benchmark files & tagged 7.1.0.1 for v7_1 Release.
 
-* 2013/06/12, robyn@lsst.org: updated benchmark files for v7_2 Release.
+* 2013/06/12, robyn@lsst.org: updated benchmark files & tagged 7.2.0.0 for v7_2 Release.
+
+* 2013/06/20, robyn@lsst.org: updated benchmark files for master branch.
