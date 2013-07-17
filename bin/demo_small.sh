@@ -12,7 +12,16 @@ setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt
 processCcdSdss.py input --id run=4192 filter=g^i^z camcol=4 field=300 --id run=6377 filter=u^r^i camcol=4 field=399 --output output
+if [ #? != 0 ]; then
+    echo "Failed during execution of:  lsst_dm_stack_demo/bin/processCcdSdss.py"
+    exit 1
+]
 ./bin/export-results output > detected-sources.txt
+if [ #? != 0 ]; then
+    echo "Failed during execution of:  lsst_dm_stack_demo/bin/export-results.py"
+    exit 1
+]
 
 echo
 echo "Processing completed successfully. The results are in detected-sources.txt."
+exit 0
