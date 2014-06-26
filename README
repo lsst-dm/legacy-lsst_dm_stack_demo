@@ -18,7 +18,7 @@ To run the example, do::
 	source $LSST_HOME/loadLSST.sh
 	setup pipe_tasks
 	setup obs_sdss
-	./bin/demo.sh  (or: ./bin/demo_small.sh  if local memory is constrained)
+	./bin/demo.sh  (or: "./bin/demo.sh --small"  if local memory is constrained)
 
 where $LSST_HOME is the directory where your LSST DM stack resides.
 
@@ -34,8 +34,9 @@ detected sources and their measured attributes.  This may be more useful for
 post-processing purposes.  This file can be compared to
 detected-sources.txt.expected -- their contents should be identical.  
 
-If you ran demo_small.sh then the corresponding comparison file is named: 
-detected-sources.txt.expected_small.
+If you use the "--small" run option then the corresponding comparison file is named: 
+detected-sources_small.txt.expected  and the corresponding output directory is called:
+"output_small".
 
 Included Data
 -------------
@@ -70,3 +71,7 @@ updated the sample output files.
 * 2013/06/12, robyn@lsst.org: updated benchmark files & tagged 7.2.0.0 for v7_2 Release.
 
 * 2013/06/20, robyn@lsst.org: updated benchmark files for master branch.
+
+* 2014/06/16, robyn@lsst.org: updated benchmark files & tagged 8.0.0.0 for v8_0 Release
+
+* 2014/06/26, robyn@lsst.org: altered file naming convention for 'small' runs and updated README.
