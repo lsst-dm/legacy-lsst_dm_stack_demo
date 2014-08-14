@@ -16,7 +16,6 @@ Usage
 To run the example, do::
 
 	source $LSST_HOME/loadLSST.sh
-	setup pipe_tasks
 	setup obs_sdss
 	./bin/demo.sh  (or: "./bin/demo.sh --small"  if local memory is constrained)
 
