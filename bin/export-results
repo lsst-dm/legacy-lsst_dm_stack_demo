@@ -13,7 +13,7 @@ outputdir = sys.argv[1]
 
 # Load sources and print interesting columns
 
-cols = ("id", 
+cols0 = ("id", 
         "coord.ra",
         "coord.dec",
         "flags.negative",
@@ -45,8 +45,39 @@ cols = ("id",
         "correctfluxes.apcorr.flags",
         )
 
-print '#' + ' '.join(cols)
+cols1 = ("id", 
+        "coord_ra",
+        "coord_dec",
+        "flags_negative",
+        "base_SdssCentroid_flag",
+        "base_PixelFlags_flag_edge",
+        "base_PixelFlags_flag_interpolated",
+        "base_PixelFlags_flag_interpolatedCenter",
+        "base_PixelFlags_flag_saturated",
+        "base_PixelFlags_flag_saturatedCenter",
+        "base_SdssCentroid_x",
+        "base_SdssCentroid_y",
+        "base_SdssCentroid_xSigma",
+        "base_SdssCentroid_ySigma",
+        "base_SdssShape_xx",
+        "base_SdssShape_xy",
+        "base_SdssShape_yy",
+        "base_SdssShape_xxSigma",
+        "base_SdssShape_xxSigma",
+        "base_SdssShape_xxSigma",
+        "base_SdssShape_flag",
+        "base_GaussianFlux_flux",
+        "base_GaussianFlux_fluxSigma",
+        "base_PsfFlux_flux",
+        "base_PsfFlux_fluxSigma",
+        "base_SincFlux_flux",
+        "base_SincFlux_fluxSigma",
+        "base_ClassificationExtendedness_value",
+        #"correctfluxes_apcorr",
+        #"correctfluxes.apcorr.flags",
+        )
 
+headerPrinted = False
 butler = dafPersist.Butler(outputdir)
 for filter in "ugriz":
     for dataId in (dict(run=4192, filter=filter, field=300, camcol=4),
@@ -56,10 +87,16 @@ for filter in "ugriz":
             continue
 
         srcs = butler.get("src", **dataId)
-
+        if srcs.getVersion() == 0:
+            cols = cols0
+        else:
+            cols = cols1
+        if not headerPrinted:
+            print '#' + ' '.join(cols)
+            headerPrinted = True
         vecs = []
         for col in cols:
-            if col.endswith(".ra") or col.endswith(".dec"):
+            if col.endswith("ra") or col.endswith("dec"):
                 v = np.rad2deg(srcs.get(col))
             elif re.search(r"\.err\.(xx|yy|xy)$", col):
                 field, which = re.search(r"^(.*\.err)\.(xx|yy|xy)$", col).groups()
