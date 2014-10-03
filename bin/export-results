@@ -13,7 +13,7 @@ outputdir = sys.argv[1]
 
 # Load sources and print interesting columns
 
-cols0 = ("id", 
+cols0 = ("id",
         "coord.ra",
         "coord.dec",
         "flags.negative",
@@ -45,7 +45,7 @@ cols0 = ("id",
         "correctfluxes.apcorr.flags",
         )
 
-cols1 = ("id", 
+cols1 = ("id",
         "coord_ra",
         "coord_dec",
         "flags_negative",
@@ -96,7 +96,7 @@ for filter in "ugriz":
             headerPrinted = True
         vecs = []
         for col in cols:
-            if col.endswith("ra") or col.endswith("dec"):
+            if col.endswith(".ra") or col.endswith(".dec") or col.endswith("_ra") or col.endswith("_dec"):
                 v = np.rad2deg(srcs.get(col))
             elif re.search(r"\.err\.(xx|yy|xy)$", col):
                 field, which = re.search(r"^(.*\.err)\.(xx|yy|xy)$", col).groups()
