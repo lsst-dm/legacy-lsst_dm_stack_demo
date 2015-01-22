@@ -15,9 +15,9 @@ Usage
 
 To run the example, do::
 
-	source $LSST_HOME/loadLSST.sh
-	setup obs_sdss
-	./bin/demo.sh  (or: "./bin/demo.sh --small"  if local memory is constrained)
+	$ source $LSST_HOME/loadLSST.sh
+	$ setup obs_sdss
+	$ ./bin/demo.sh  (or: "./bin/demo.sh --small"  if local memory is constrained)
 
 where $LSST_HOME is the directory where your LSST DM stack resides.
 
@@ -26,14 +26,20 @@ processCcd scripts.
 
 All outputs (calibrated images, FITS tables of detected sources, etc.) will be
 stored in the ./output subdirectory.  These are "raw" outputs, readable by
-other parts of the LSST pipeline. 
+other parts of the LSST pipeline
 
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
 post-processing purposes.  This file can be compared to
-detected-sources.txt.expected -- their contents should be identical.  
+detected-sources.txt.expected.  The results should be very similar, but slight
+differences in the numerical libraries on different platforms can produce
+minor variations in the output.  The bin/compare script will check if your
+results are within the expected numerical tolerances::
 
-If you use the "--small" run option then the corresponding comparison file is named: 
+    $ bin/compare detected-sources.txt.expected detected-sources.txt
+    Ok.
+
+If you use the "--small" run option then the corresponding comparison file is named:
 detected-sources_small.txt.expected  and the corresponding output directory is called:
 "output_small".
 
@@ -74,3 +80,5 @@ updated the sample output files.
 * 2014/06/16, robyn@lsst.org: updated benchmark files & tagged 8.0.0.0 for v8_0 Release
 
 * 2014/06/26, robyn@lsst.org: altered file naming convention for 'small' runs and updated README.
+
+* 2015/01/21, swibank@princeton.edu: added comparison script.
