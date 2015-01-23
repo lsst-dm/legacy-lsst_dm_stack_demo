@@ -73,8 +73,6 @@ cols1 = ("id",
         "base_CircularApertureFlux_2_flux",
         "base_CircularApertureFlux_2_fluxSigma",
         "base_ClassificationExtendedness_value",
-        #"correctfluxes_apcorr",
-        #"correctfluxes.apcorr.flags",
         )
 
 headerPrinted = False
