@@ -70,11 +70,9 @@ cols1 = ("id",
         "base_GaussianFlux_fluxSigma",
         "base_PsfFlux_flux",
         "base_PsfFlux_fluxSigma",
-        "base_SincFlux_flux",
-        "base_SincFlux_fluxSigma",
+        "base_CircularApertureFlux_2_flux",
+        "base_CircularApertureFlux_2_fluxSigma",
         "base_ClassificationExtendedness_value",
-        #"correctfluxes_apcorr",
-        #"correctfluxes.apcorr.flags",
         )
 
 headerPrinted = False
