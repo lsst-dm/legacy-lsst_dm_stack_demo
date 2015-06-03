@@ -16,13 +16,13 @@ DTYPE = np.dtype(
     [("id", np.int64),
      ("coord_ra", float),
      ("coord_dec", float),
-     ("flags_negative", str),
-     ("base_SdssCentroid_flag", str),
-     ("base_PixelFlags_flag_edge", str),
-     ("base_PixelFlags_flag_interpolated", str),
-     ("base_PixelFlags_flag_interpolatedCenter", str),
-     ("base_PixelFlags_flag_saturated", str),
-     ("base_PixelFlags_flag_saturatedCenter", str),
+     ("flags_negative", str, 5),
+     ("base_SdssCentroid_flag", str, 5),
+     ("base_PixelFlags_flag_edge", str, 5),
+     ("base_PixelFlags_flag_interpolated", str, 5),
+     ("base_PixelFlags_flag_interpolatedCenter", str, 5),
+     ("base_PixelFlags_flag_saturated", str, 5),
+     ("base_PixelFlags_flag_saturatedCenter", str, 5),
      ("base_SdssCentroid_x", float),
      ("base_SdssCentroid_y", float),
      ("base_SdssCentroid_xSigma", float),
@@ -33,7 +33,7 @@ DTYPE = np.dtype(
      ("base_SdssShape_xxSigma", float),
      ("base_SdssShape_xySigma", float),
      ("base_SdssShape_yySigma", float),
-     ("base_SdssShape_flag", str),
+     ("base_SdssShape_flag", str, 5),
      ("base_GaussianFlux_flux", float),
      ("base_GaussianFlux_fluxSigma", float),
      ("base_PsfFlux_flux", float),
@@ -96,7 +96,9 @@ def compare(table1, table2, tolerance=4e-3):
                 valid = False
         else:
             if not np.all(table1[name] == table2[name]):
-                print("Failed (flags do not match) in column %s." % name)
+                nTotal = len(table1[name])
+                nDiff = len(np.where(table1[name] != table2[name])[0])
+                print("Failed (%s of %s flags do not match) in column %s." % (str(nDiff), str(nTotal), name))
                 valid = False
     return valid
 
