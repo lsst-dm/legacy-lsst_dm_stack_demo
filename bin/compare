@@ -1,16 +1,51 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import sys
 import argparse
 import numpy as np
 
 # Data columns in the output
-# (others are flags, which we don't compare)
-COLUMNS = (0,1,2,10,11,12,13,14,15,16,17,18,19,21,22,23,24,25,26,27)
+# This needs to be kept in sync with the columns in export-results, until
+# this script and the expected results files are modified to run directly
+# on the binary table outputs.
+# Note that we load the flags as 'str', since that's what export-results
+# does, but that doesn't matter since we're just comparing for equality
+# for all non-float fields.
+DTYPE = np.dtype(
+    [("id", np.int64),
+     ("coord_ra", float),
+     ("coord_dec", float),
+     ("flags_negative", str),
+     ("base_SdssCentroid_flag", str),
+     ("base_PixelFlags_flag_edge", str),
+     ("base_PixelFlags_flag_interpolated", str),
+     ("base_PixelFlags_flag_interpolatedCenter", str),
+     ("base_PixelFlags_flag_saturated", str),
+     ("base_PixelFlags_flag_saturatedCenter", str),
+     ("base_SdssCentroid_x", float),
+     ("base_SdssCentroid_y", float),
+     ("base_SdssCentroid_xSigma", float),
+     ("base_SdssCentroid_ySigma", float),
+     ("base_SdssShape_xx", float),
+     ("base_SdssShape_xy", float),
+     ("base_SdssShape_yy", float),
+     ("base_SdssShape_xxSigma", float),
+     ("base_SdssShape_xySigma", float),
+     ("base_SdssShape_yySigma", float),
+     ("base_SdssShape_flag", str),
+     ("base_GaussianFlux_flux", float),
+     ("base_GaussianFlux_fluxSigma", float),
+     ("base_PsfFlux_flux", float),
+     ("base_PsfFlux_fluxSigma", float),
+     ("base_CircularApertureFlux_2_flux", float),
+     ("base_CircularApertureFlux_2_fluxSigma", float),
+     ("base_ClassificationExtendedness_value", float),
+     ])
 
 def get_array(filename):
     with open(filename, 'r') as f:
-        array = np.loadtxt(f, usecols=COLUMNS)
+        array = np.loadtxt(f, dtype=DTYPE)
     return array
 
 def relDifference(arr1, arr2):
@@ -44,15 +79,31 @@ def relDifference(arr1, arr2):
 
     return absDiff/np.abs(divisor)
 
+# Default tolerance chosen so that results measured on OS X 10.10.1,
+# Ubuntu 14.04 and CentOS 6.6 are all regarded as consistent.
+def compare(table1, table2, tolerance=4e-3):
+    if table1.dtype != table2.dtype:
+        print("Files do not have the same columns.")
+        return False
+    valid = True
+    for name in table1.dtype.names:
+        dtype, count = table1.dtype.fields[name]
+        if dtype == np.dtype(float):
+            maxDiff = relDifference(table1[name], table2[name]).max()
+            if maxDiff > tolerance:
+                print("Failed (max difference %f over tolerance %f) in column %s." %
+                      (maxDiff, args.tolerance, name))
+                valid = False
+        else:
+            if not np.all(table1[name] == table2[name]):
+                print("Failed (flags do not match) in column %s." % name)
+                valid = False
+    return valid
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', nargs=2)
-    # Default tolerance chosen so that results measured on OS X 10.10.1,
-    # Ubuntu 14.04 and CentOS 6.6 are all regarded as consistent.
     parser.add_argument('--tolerance', default=4e-3, type=float)
     args = parser.parse_args()
-    maxDiff = relDifference(get_array(args.filename[0]), get_array(args.filename[1])).max()
-    if maxDiff > args.tolerance:
-        print "Failed (max difference %f over tolerance %f)." % (maxDiff, args.tolerance)
-    else:
-        print "Ok."
+    if compare(get_array(args.filename[0]), get_array(args.filename[1])):
+        print("Ok.")
