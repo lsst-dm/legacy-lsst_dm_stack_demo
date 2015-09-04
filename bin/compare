@@ -4,6 +4,7 @@ from __future__ import print_function
 import argparse
 import os
 import re
+import subprocess
 import sys
 import numpy as np
 
@@ -117,6 +118,21 @@ def compareWithNumPy(filename, reference, tolerance):
                 valid = False
     return valid
 
+def compareWithNumDiff(filename, reference, tolerance, numdiffPath):
+    """
+    Compare a generated data file to a reference by executing numdiff.
+
+
+    @param filename    Path to input data file.
+    @param reference   Path to reference file.
+    @param tolerance   Tolerance.
+    @param numdiffPath Path to the numdiff executable.
+    """
+    if subprocess.call([numdiffPath, filename, reference, "-a", str(tolerance), "-r", str(tolerance)]):
+        return False
+    else:
+        return True
+
 def determineFlavor():
     """
     Return a string representing the 'flavor' of the local system.
@@ -163,10 +179,18 @@ if __name__ == "__main__":
     parser.add_argument('--tolerance', default=4e-3, type=float, help="Tolerance for errors. "
                         "The test will fail if both the relative and absolute errors exceed the tolerance.")
     parser.add_argument('--reference', type=extantFile, help="Reference data for comparison.")
+    parser.add_argument('--use-numdiff', action="store_true",
+                        help="Perform comparison using external numdiff executable.")
+    parser.add_argument('--numdiff-path', type=extantFile, help="Path to numdiff executable.")
     args = parser.parse_args()
     if not args.reference:
         args.reference=referenceFilename(args.filename)
-    result = compareWithNumPy(args.filename, args.reference, args.tolerance)
+    if not args.use_numdiff:
+        result = compareWithNumPy(args.filename, args.reference, args.tolerance)
+    else:
+        if not args.numdiff_path:
+            args.numdiff_path = "numdiff" # Assume it's on the user's path.
+        result = compareWithNumDiff(args.filename, args.reference, args.tolerance, args.numdiff_path)
 
     if result:
         print("Ok.")

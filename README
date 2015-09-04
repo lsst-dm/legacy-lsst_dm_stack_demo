@@ -35,12 +35,16 @@ output; choose a result set appropriate for your system. The ./bin/compare
 script can then be used to check if your results are within the expected
 numerical tolerances::
 
-    $ bin/compare detected-sources.txt.expected detected-sources.txt
+    $ bin/compare detected-sources.txt
     Ok.
 
-If you use the "--small" run option then the corresponding comparison file is named:
-detected-sources_small.txt.expected  and the corresponding output directory is called:
-"output_small".
+If you use the "--small" run option then the corresponding output file is
+named detected-sources_small.txt and the corresponding output directory is
+called "output_small".
+
+By default, we use some bespoke Python code to perform the comparison. Specify
+the ``--use-numdiff`` option to ``bin/compare`` to use `Numdiff
+<http://www.nongnu.org/numdiff/>`_ instead.
 
 Included Data
 -------------
