@@ -30,11 +30,12 @@ other parts of the LSST pipeline
 
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
-post-processing purposes.  This file can be compared to
-detected-sources.txt.expected.  The results should be very similar, but slight
-differences in the numerical libraries on different platforms can produce
-minor variations in the output.  The bin/compare script will check if your
-results are within the expected numerical tolerances::
+post-processing purposes.  This file may be compared to the expected results
+found in the ./expected subdirectory.  Note that variations in the numerical
+libraries found on different platforms can produce minor variations in the
+output; choose a result set appropriate for your system. The ./bin/compare
+script can then be used to check if your results are within the expected
+numerical tolerances::
 
     $ bin/compare detected-sources.txt.expected detected-sources.txt
     Ok.
