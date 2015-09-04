@@ -61,3 +61,11 @@ astrometry_net_data
   Astrometric and photometric reference catalog for astrometry.net, pared down
   to the area required for the above fields.  This catalog is used only for
   estimating photometric zeropoints; the astrometry is not re-determined.
+
+Updating the reference results
+------------------------------
+
+When making a change to the stack which change the numerical outputs,
+developers *must* update *all* of the references files in the ``./expected``
+directory to match. This likely means running the demo on multiple different
+systems and collecting the results.
