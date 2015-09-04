@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import sys
 import argparse
+import os
+import re
+import sys
 import numpy as np
 
 # Data columns in the output
@@ -102,10 +104,57 @@ def compare(table1, table2, tolerance=4e-3):
                 valid = False
     return valid
 
+def determineFlavor():
+    """
+    Return a string representing the 'flavor' of the local system.
+
+    Based on the equivalent logic in EUPS, but without introducing an EUPS
+    dependency.
+    """
+    uname, machine = os.uname()[0:5:4]
+    if uname == "Linux":
+        if machine[-2:] == "64":
+            return "Linux64"
+        else:
+            return "Linux"
+    elif uname == "Darwin":
+        if machine in ("x86_64", "i686"):
+            return "DarwinX86"
+        else:
+            return "Darwin"
+    else:
+        raise RuntimeError, ("Unknown flavor: (%s, %s)" % (uname, machine))
+
+def extantFile(filename):
+    """
+    Raise ArgumentTypeError if ``filename`` does not exist.
+    """
+    if not os.path.isfile(filename):
+        raise argparse.ArgumentTypeError(filename + " is not a file.")
+    return filename
+
+def referenceFilename(checkFilename):
+    """
+    Attempt to guess the filename to compare our input against.
+    """
+    guess = os.path.join(os.path.split(os.path.dirname(__file__))[0], "expected",
+                         determineFlavor(), os.path.basename(checkFilename))
+    if os.path.isfile(guess):
+        return guess
+    else:
+        raise ValueError("Cannot find reference data (looked for %s)." % (guess,))
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', nargs=2)
-    parser.add_argument('--tolerance', default=4e-3, type=float)
+    parser.add_argument('filename', type=extantFile, help="Input data file.")
+    parser.add_argument('--tolerance', default=4e-3, type=float, help="Tolerance for errors.")
+    parser.add_argument('--reference', type=extantFile, help="Reference data for comparison.")
     args = parser.parse_args()
-    if compare(get_array(args.filename[0]), get_array(args.filename[1])):
+    if not args.reference:
+        args.reference=referenceFilename(args.filename)
+    result = compareWithNumPy(get_array(args.filename), get_array(args.reference), args.tolerance)
+
+    if result:
         print("Ok.")
+    else:
+        sys.exit(1)
