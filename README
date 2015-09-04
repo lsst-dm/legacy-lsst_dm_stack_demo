@@ -1,8 +1,6 @@
 A sample dataset for running the LSST DM stack
 ==============================================
 
-Maintainer: Mario Juric <mjuric@lsst.org>
-
 Overview
 --------
 
@@ -59,27 +57,3 @@ astrometry_net_data
   Astrometric and photometric reference catalog for astrometry.net, pared down
   to the area required for the above fields.  This catalog is used only for
   estimating photometric zeropoints; the astrometry is not re-determined.
-
-Changelog
----------
-* 2012/08/30, ktl@slac.stanford.edu: created the initial dataset and updated
-  the scripts.
-
-* 2013/02/21, robyn@lsst.org: reduced number of filters used in order to work around a hard limit in LSST buildbot virtual machines for (Mem + Swap) = 8Gb.
-
-* 2013/04/11, robyn@lsst.org: replaced output variables: aperturecorrection and aperturecorrection.err with correctfluxes.apcor and correctfluxes.apcor.flags;
-updated the sample output files.
-
-* 2013/06/07, robyn@lsst.org: removed multishapelet output variables since their configuration and use is no longer defined in the default configuration.
-
-* 2013/06/11, robyn@lsst.org: updated benchmark files & tagged 7.1.0.1 for v7_1 Release.
-
-* 2013/06/12, robyn@lsst.org: updated benchmark files & tagged 7.2.0.0 for v7_2 Release.
-
-* 2013/06/20, robyn@lsst.org: updated benchmark files for master branch.
-
-* 2014/06/16, robyn@lsst.org: updated benchmark files & tagged 8.0.0.0 for v8_0 Release
-
-* 2014/06/26, robyn@lsst.org: altered file naming convention for 'small' runs and updated README.
-
-* 2015/01/21, swibank@princeton.edu: added comparison script.
