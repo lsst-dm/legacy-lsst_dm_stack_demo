@@ -42,10 +42,6 @@ If you use the "--small" run option then the corresponding output file is
 named detected-sources_small.txt and the corresponding output directory is
 called "output_small".
 
-By default, we use some bespoke Python code to perform the comparison. Specify
-the ``--use-numdiff`` option to ``bin/compare`` to use `Numdiff
-<http://www.nongnu.org/numdiff/>`_ instead.
-
 Included Data
 -------------
 
