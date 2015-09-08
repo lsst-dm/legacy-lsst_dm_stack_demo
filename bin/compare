@@ -87,6 +87,7 @@ def compareWithNumPy(filename, reference, tolerance):
     Compare a generated data file to a reference using NumPy.
 
     The comparison is successful if:
+    * The files contain the same data columns (both by name and by data type);
     * Each numeric value is in the input is either:
         a) Within ``tolerance`` of the corresponding value in the reference, or
         b) The relative difference with the reference (defined as above) is
@@ -97,9 +98,12 @@ def compareWithNumPy(filename, reference, tolerance):
     @param reference Path to reference file.
     @param tolerance Tolerance.
     """
+    with open(filename, 'r') as data, open(reference, 'r') as ref:
+        data_columns = data.readline().strip('#').split()
+        ref_columns = ref.readline().strip('#').split()
     table1, table2 = get_array(filename), get_array(reference)
-    if table1.dtype != table2.dtype:
-        print("Files do not have the same columns.")
+    if (table1.dtype != table2.dtype) or (data_columns != ref_columns):
+        print("Files do not contain the same columns.")
         return False
     valid = True
     for name in table1.dtype.names:
