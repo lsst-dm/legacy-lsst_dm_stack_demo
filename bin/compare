@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import sys
 import argparse
+import os
+import re
+import subprocess
+import sys
 import numpy as np
 
 # Data columns in the output
@@ -48,9 +51,9 @@ def get_array(filename):
         array = np.loadtxt(f, dtype=DTYPE)
     return array
 
-def relDifference(arr1, arr2):
+def difference(arr1, arr2):
     """
-    Compute the 'relative difference' of numpy arrays arr1 & arr2.
+    Compute the relative and absolute differences of numpy arrays arr1 & arr2.
 
     The relative difference R between numbers n1 and n2 is defined as per
     numdiff (http://www.nongnu.org/numdiff/numdiff.html):
@@ -77,23 +80,40 @@ def relDifference(arr1, arr2):
     divisor = np.where(np.minimum(arr1, arr2) == 0, 1, np.minimum(arr1, arr2))
     divisor = np.where(np.isnan(divisor),  1, divisor)
 
-    return absDiff/np.abs(divisor)
+    return absDiff, absDiff/np.abs(divisor)
 
-# Default tolerance chosen so that results measured on OS X 10.10.1,
-# Ubuntu 14.04 and CentOS 6.6 are all regarded as consistent.
-def compare(table1, table2, tolerance=4e-3):
-    if table1.dtype != table2.dtype:
-        print("Files do not have the same columns.")
+def compareWithNumPy(filename, reference, tolerance):
+    """
+    Compare a generated data file to a reference using NumPy.
+
+    The comparison is successful if:
+    * The files contain the same data columns (both by name and by data type);
+    * Each numeric value is in the input is either:
+        a) Within ``tolerance`` of the corresponding value in the reference, or
+        b) The relative difference with the reference (defined as above) is
+           within ``tolerance``;
+    * Flags recorded in the input and the reference are identical.
+
+    @param filename  Path to input data file.
+    @param reference Path to reference file.
+    @param tolerance Tolerance.
+    """
+    with open(filename, 'r') as data, open(reference, 'r') as ref:
+        data_columns = data.readline().strip('#').split()
+        ref_columns = ref.readline().strip('#').split()
+    table1, table2 = get_array(filename), get_array(reference)
+    if (table1.dtype != table2.dtype) or (data_columns != ref_columns):
+        print("Files do not contain the same columns.")
         return False
     valid = True
     for name in table1.dtype.names:
         dtype, count = table1.dtype.fields[name]
         if dtype == np.dtype(float):
-            maxDiff = relDifference(table1[name], table2[name]).max()
-            if maxDiff > tolerance:
-                print("Failed (max difference %f over tolerance %f) in column %s." %
-                      (maxDiff, args.tolerance, name))
+            absDiff, relDiff = difference(table1[name], table2[name])
+            for pos in np.where((relDiff > tolerance) & (absDiff > tolerance))[0]:
                 valid = False
+                print("Failed (absolute difference %g, relative difference %g over tolerance %g) "
+                      "in column %s." % (absDiff[pos], relDiff[pos], tolerance, name))
         else:
             if not np.all(table1[name] == table2[name]):
                 nTotal = len(table1[name])
@@ -102,10 +122,58 @@ def compare(table1, table2, tolerance=4e-3):
                 valid = False
     return valid
 
+def determineFlavor():
+    """
+    Return a string representing the 'flavor' of the local system.
+
+    Based on the equivalent logic in EUPS, but without introducing an EUPS
+    dependency.
+    """
+    uname, machine = os.uname()[0:5:4]
+    if uname == "Linux":
+        if machine[-2:] == "64":
+            return "Linux64"
+        else:
+            return "Linux"
+    elif uname == "Darwin":
+        if machine in ("x86_64", "i686"):
+            return "DarwinX86"
+        else:
+            return "Darwin"
+    else:
+        raise RuntimeError, ("Unknown flavor: (%s, %s)" % (uname, machine))
+
+def extantFile(filename):
+    """
+    Raise ArgumentTypeError if ``filename`` does not exist.
+    """
+    if not os.path.isfile(filename):
+        raise argparse.ArgumentTypeError(filename + " is not a file.")
+    return filename
+
+def referenceFilename(checkFilename):
+    """
+    Attempt to guess the filename to compare our input against.
+    """
+    guess = os.path.join(os.path.split(os.path.dirname(__file__))[0], "expected",
+                         determineFlavor(), os.path.basename(checkFilename))
+    if os.path.isfile(guess):
+        return guess
+    else:
+        raise ValueError("Cannot find reference data (looked for %s)." % (guess,))
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', nargs=2)
-    parser.add_argument('--tolerance', default=4e-3, type=float)
+    parser.add_argument('filename', type=extantFile, help="Input data file.")
+    parser.add_argument('--tolerance', default=0, type=float, help="Tolerance for errors. "
+                        "The test will fail if both the relative and absolute errors exceed the tolerance.")
+    parser.add_argument('--reference', type=extantFile, help="Reference data for comparison.")
     args = parser.parse_args()
-    if compare(get_array(args.filename[0]), get_array(args.filename[1])):
+
+    if not args.reference:
+        args.reference=referenceFilename(args.filename)
+
+    if compareWithNumPy(args.filename, args.reference, args.tolerance):
         print("Ok.")
+    else:
+        sys.exit(1)

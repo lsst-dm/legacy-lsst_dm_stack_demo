@@ -1,8 +1,6 @@
 A sample dataset for running the LSST DM stack
 ==============================================
 
-Maintainer: Mario Juric <mjuric@lsst.org>
-
 Overview
 --------
 
@@ -30,18 +28,19 @@ other parts of the LSST pipeline
 
 In detected-sources.txt, you'll find an ASCII whitespace separated list of
 detected sources and their measured attributes.  This may be more useful for
-post-processing purposes.  This file can be compared to
-detected-sources.txt.expected.  The results should be very similar, but slight
-differences in the numerical libraries on different platforms can produce
-minor variations in the output.  The bin/compare script will check if your
-results are within the expected numerical tolerances::
+post-processing purposes.  This file may be compared to the expected results
+found in the ./expected subdirectory.  Note that variations in the numerical
+libraries found on different platforms can produce minor variations in the
+output; choose a result set appropriate for your system. The ./bin/compare
+script can then be used to check if your results are within the expected
+numerical tolerances::
 
-    $ bin/compare detected-sources.txt.expected detected-sources.txt
+    $ bin/compare detected-sources.txt
     Ok.
 
-If you use the "--small" run option then the corresponding comparison file is named:
-detected-sources_small.txt.expected  and the corresponding output directory is called:
-"output_small".
+If you use the "--small" run option then the corresponding output file is
+named detected-sources_small.txt and the corresponding output directory is
+called "output_small".
 
 Included Data
 -------------
@@ -59,26 +58,10 @@ astrometry_net_data
   to the area required for the above fields.  This catalog is used only for
   estimating photometric zeropoints; the astrometry is not re-determined.
 
-Changelog
----------
-* 2012/08/30, ktl@slac.stanford.edu: created the initial dataset and updated
-  the scripts.
+Updating the reference results
+------------------------------
 
-* 2013/02/21, robyn@lsst.org: reduced number of filters used in order to work around a hard limit in LSST buildbot virtual machines for (Mem + Swap) = 8Gb.
-
-* 2013/04/11, robyn@lsst.org: replaced output variables: aperturecorrection and aperturecorrection.err with correctfluxes.apcor and correctfluxes.apcor.flags;
-updated the sample output files.
-
-* 2013/06/07, robyn@lsst.org: removed multishapelet output variables since their configuration and use is no longer defined in the default configuration.
-
-* 2013/06/11, robyn@lsst.org: updated benchmark files & tagged 7.1.0.1 for v7_1 Release.
-
-* 2013/06/12, robyn@lsst.org: updated benchmark files & tagged 7.2.0.0 for v7_2 Release.
-
-* 2013/06/20, robyn@lsst.org: updated benchmark files for master branch.
-
-* 2014/06/16, robyn@lsst.org: updated benchmark files & tagged 8.0.0.0 for v8_0 Release
-
-* 2014/06/26, robyn@lsst.org: altered file naming convention for 'small' runs and updated README.
-
-* 2015/01/21, swibank@princeton.edu: added comparison script.
+When making a change to the stack which change the numerical outputs,
+developers *must* update *all* of the references files in the ``./expected``
+directory to match. This likely means running the demo on multiple different
+systems and collecting the results.
