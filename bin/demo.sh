@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# On OS X El Capitan we need to pass through the library load path
+if [[ $(uname -s) = Darwin* ]]; then
+    if [[ -z "$DYLD_LIBRARY_PATH" ]]; then
+        export DYLD_LIBRARY_PATH=$LSST_LIBRARY_PATH
+    fi
+fi
+
 # Assumes eups and DM packages: lsst_distrib obs_sdss, are eups-setup.
 source $EUPS_DIR/bin/setups.sh
 
@@ -49,7 +56,10 @@ setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt output_small detected-sources_small.txt
 processCcdSdss.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --output output$SIZE_EXT
-./bin/export-results output$SIZE_EXT > detected-sources$SIZE_EXT.txt
+
+# We need to explicitly specify Python here to allow the library load
+# path environment to be passed to export-results on modern OS X versions.
+python ./bin/export-results output$SIZE_EXT > detected-sources$SIZE_EXT.txt
 
 echo
 echo "Processing completed successfully. The results are in detected-sources$SIZE_EXT.txt."
