@@ -42,6 +42,10 @@ If you use the "--small" run option then the corresponding output file is
 named detected-sources_small.txt and the corresponding output directory is
 called "output_small".
 
+Check the astrometric relative RMS with
+
+    $ python bin/check_astrompetry.py output
+
 Included Data
 -------------
 
