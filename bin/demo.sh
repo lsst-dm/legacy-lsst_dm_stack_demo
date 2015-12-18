@@ -64,5 +64,8 @@ processCcdSdss.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300
 #   no longer loads the correct environment.
 python ./bin/export-results output$SIZE_EXT > detected-sources$SIZE_EXT.txt
 
+# Check astrometry
+python bin/check_astrometry.py output
+
 echo
 echo "Processing completed successfully. The results are in detected-sources$SIZE_EXT.txt."

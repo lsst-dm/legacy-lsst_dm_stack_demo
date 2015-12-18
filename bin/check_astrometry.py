@@ -27,7 +27,7 @@ def angDist(ra_1, dec_1, ra_2, dec_2) :
     
     return math.atan2(math.sqrt(num), den)
 
-def loadData(repo, visits, ref, camcol, filter) :
+def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
 
     Flags = ["base_PixelFlags_flag_saturated", "base_PixelFlags_flag_cr", "base_PixelFlags_flag_interpolated",
              "base_PsfFlux_flag_edge"]
@@ -35,8 +35,8 @@ def loadData(repo, visits, ref, camcol, filter) :
     #setup butler
     butler = dafPersist.Butler(repo)
 
-    for indx, c in enumerate(camcol) :
-        dataid = {'run':ref, 'filter':filter, 'camcol':c}
+    for indx, c in enumerate(camcol):
+        dataid = {'run':ref, 'filter':filter, 'field':ref_field, 'camcol':c}
         oldSrc = butler.get('src', dataid, immediate=True)
         print len(oldSrc), "sources in camcol :", c
         if indx == 0 :
@@ -62,11 +62,11 @@ def loadData(repo, visits, ref, camcol, filter) :
 
     mag = []
     dist = []
-    for v in visits :
+    for v, f in zip(visits, field):
         if v == ref :
             continue
-        for indx, c in enumerate(camcol) :
-            dataid = {'visit':v, 'filter':filter, 'camcol':c}
+        for indx, c in enumerate(camcol):
+            dataid = {'run':v, 'filter':filter, 'field':f, 'camcol':c}
             if indx == 0 :
                 srcVis = butler.get('src', dataid, immediate=True)
             else :
@@ -109,7 +109,7 @@ def loadData(repo, visits, ref, camcol, filter) :
             # retrieve the camcol corresponding to the reference source
             camcolRef = mRef.get('camcol')
             # retrieve the calibration object associated to the camcol
-            did = {'visit':ref, 'filter':filter, 'camcol':camcolRef}
+            did = {'run':ref, 'filter':filter, 'field':ref_field, 'camcol':camcolRef}
             md = butler.get("calexp_md", did, immediate=True)
             calib = afwImage.Calib(md)
             # compute magnitude
@@ -156,14 +156,15 @@ def check_astrometry(repo, mag, dist, match) :
 
     print "Median value of the astrometric scatter - all magnitudes:", np.median(dist), "mas"
 
-    idxs = np.where(np.asarray(mag) < 21)
+    good_mag_limit = 19.5
+    idxs = np.where(np.asarray(mag) < good_mag_limit)
     ax[2][0].hist(np.asarray(dist)[idxs], bins=100)
-    ax[2][0].set_xlabel("Distance in mas - mag < 21", fontsize=20)
+    ax[2][0].set_xlabel("Distance in mas - mag < %.1f" % good_mag_limit, fontsize=20)
     ax[2][0].set_xlim([0,200])
-    ax[2][0].set_title("Median (mag < 21) : %.1f mas"%(np.median(np.asarray(dist)[idxs])), fontsize=20, x=0.6, y=0.88)
+    ax[2][0].set_title("Median (mag < %.1f) : %.1f mas" % (good_mag_limit, np.median(np.asarray(dist)[idxs])), fontsize=20, x=0.6, y=0.88)
     ax[2][1].scatter(np.asarray(mag)[idxs], np.asarray(dist)[idxs], s=10, color='b')
     ax[2][1].set_xlabel("Magnitude", fontsize=20)
-    ax[2][1].set_ylabel("Distance in mas - mag < 21", fontsize=20)
+    ax[2][1].set_ylabel("Distance in mas - mag < %.1f" % good_mag_limit, fontsize=20)
     ax[2][1].set_ylim([0.,200.])
     ax[2][0].tick_params(labelsize=20)
     ax[2][1].tick_params(labelsize=20)
@@ -172,35 +173,37 @@ def check_astrometry(repo, mag, dist, match) :
     plotPath = os.path.join(repo, "astrometry_sdss.png")
     plt.savefig(plotPath, format="png")
 
-    medianMag21 = np.median(np.asarray(dist)[idxs])
-    print "Astrometric scatter (median) - mag < 21 :", medianMag21, "mas"
+    astromScatter = np.median(np.asarray(dist)[idxs])
+    print "Astrometric scatter (median) - mag < %1.f :" % good_mag_limit, astromScatter, "mas"
 
-    return medianMag21
+    return astromScatter
     
 def main(repo):
     
-    # List of visits to be considered
-    visits = [849375, 850587]
+    # List of SDSS runs to be considered
+    runs = [4192, 6377]
+    field = [300, 399]
 
     # Reference visit (the other viisits will be compared to this one
-    ref = 849375
+    ref = 4192
+    ref_field = 300
 
     # List of camcol to be considered (source calalogs will be concateneted)
-    camcol = []
+    camcol = [4]
     filter = 'r'
     
     # Reference values for the median astrometric scatter and the number of matches
-    medianRef = 25
-    matchRef = 5600
+    medianRef = 100
+    matchRef = 500
     
-    struct = loadData(repo, visits, ref, camcol, filter)
+    struct = loadData(repo, runs, field, ref, ref_field, camcol, filter)
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    medianMag21 = check_astrometry(repo, mag, dist, match)
+    astromScatter = check_astrometry(repo, mag, dist, match)
 
-    if medianMag21 > medianRef :
-	print "Median astrometric scatter %.1f mas is larger than reference : %.1f mas "%(medianMag21, medianRef)
+    if astromScatter > medianRef :
+	print "Median astrometric scatter %.1f mas is larger than reference : %.1f mas "%(astromScatter, medianRef)
 	sys.exit(99)
     if match < matchRef :
     	print "Number of matched sources %d is too small (shoud be > %d)"%(match,matchRef)
