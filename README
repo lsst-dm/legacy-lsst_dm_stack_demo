@@ -44,7 +44,7 @@ called "output_small".
 
 Check the astrometric relative RMS with
 
-    $ python bin/check_astrompetry.py output
+    $ python bin/check_astrometry.py output
 
 Included Data
 -------------
