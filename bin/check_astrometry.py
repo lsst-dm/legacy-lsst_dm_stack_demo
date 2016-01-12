@@ -1,4 +1,28 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+
+# 
+# LSST Data Management System
+# Copyright 2008-2016 AURA/LSST.
+# 
+# This product includes software developed by the
+# LSST Project (http://www.lsst.org/).
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the LSST License Statement and 
+# the GNU General Public License along with this program.  If not, 
+# see <https://www.lsstcorp.org/LegalNotices/>.
+
+from __future__ import print_function
+
 import math
 import os.path
 import sys
@@ -23,7 +47,7 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
     for indx, c in enumerate(camcol):
         dataid = {'run':ref, 'filter':filter, 'field':ref_field, 'camcol':c}
         oldSrc = butler.get('src', dataid, immediate=True)
-        print len(oldSrc), "sources in camcol :", c
+        print(len(oldSrc), "sources in camcol :", c)
         if indx == 0 :
             # retrieve the schema of the source catalog and extend it in order to add a field to record the camcol number
             oldSchema = oldSrc.getSchema()
@@ -43,7 +67,7 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
         # append the temporary catalog to the extended source catalog    
         srcRef.extend(tmpCat, deep=False)
 
-    print len(srcRef), "Sources in reference visit :", ref
+    print(len(srcRef), "Sources in reference visit :", ref)
 
     mag = []
     dist = []
@@ -56,11 +80,11 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
                 srcVis = butler.get('src', dataid, immediate=True)
             else :
                 srcVis.extend(butler.get('src', dataid, immediate=True), False)
-            print len(srcVis), "sources in camcol : ", c
+            print(len(srcVis), "sources in camcol : ", c)
         
         match = afwTable.matchRaDec(srcRef, srcVis, afwGeom.Angle(1./3600., afwGeom.degrees))
         matchNum = len(match)
-        print "Visit :", v, matchNum, "matches found"
+        print("Visit :", v, matchNum, "matches found")
 
 	schemaRef = srcRef.getSchema()
         schemaVis = srcVis.getSchema()
@@ -139,7 +163,7 @@ def check_astrometry(repo, mag, dist, match) :
     ax[1][0].tick_params(labelsize=20)
     ax[1][1].tick_params(labelsize=20)
 
-    print "Median value of the astrometric scatter - all magnitudes:", np.median(dist), "mas"
+    print("Median value of the astrometric scatter - all magnitudes:", np.median(dist), "mas")
 
     good_mag_limit = 19.5
     idxs = np.where(np.asarray(mag) < good_mag_limit)
@@ -159,7 +183,7 @@ def check_astrometry(repo, mag, dist, match) :
     plt.savefig(plotPath, format="png")
 
     astromScatter = np.median(np.asarray(dist)[idxs])
-    print "Astrometric scatter (median) - mag < %1.f :" % good_mag_limit, astromScatter, "mas"
+    print("Astrometric scatter (median) - mag < %1.f :" % good_mag_limit, astromScatter, "mas")
 
     return astromScatter
     
@@ -188,20 +212,20 @@ def main(repo):
     astromScatter = check_astrometry(repo, mag, dist, match)
 
     if astromScatter > medianRef :
-	print "Median astrometric scatter %.1f mas is larger than reference : %.1f mas "%(astromScatter, medianRef)
+	print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas "%(astromScatter, medianRef))
 	sys.exit(99)
     if match < matchRef :
-    	print "Number of matched sources %d is too small (shoud be > %d)"%(match,matchRef)
+    	print("Number of matched sources %d is too small (shoud be > %d)"%(match,matchRef))
     	sys.exit(99)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print """Usage: astrometry_sdss.py repo
+        print("""Usage: astrometry_sdss.py repo
 where repo is the path to a repository containing the output of processCcd
-"""
+""")
         sys.exit(1)
     repo = sys.argv[1]
     if not os.path.isdir(repo):
-        print "Could not find repo %r" % (repo,)
+        print("Could not find repo %r" % (repo,))
         sys.exit(1)
     main(repo)
