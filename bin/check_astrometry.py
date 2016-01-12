@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# 
 # LSST Data Management System
 # Copyright 2008-2016 AURA/LSST.
 # 
@@ -23,7 +22,6 @@
 
 from __future__ import print_function
 
-import math
 import os.path
 import sys
 
@@ -36,12 +34,12 @@ import lsst.afw.table as afwTable
 import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 
-def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
+def loadData(repo, visits, fields, ref, ref_field, camcol, filter) :
 
-    Flags = ["base_PixelFlags_flag_saturated", "base_PixelFlags_flag_cr", "base_PixelFlags_flag_interpolated",
+    flags = ["base_PixelFlags_flag_saturated", "base_PixelFlags_flag_cr", "base_PixelFlags_flag_interpolated",
              "base_PsfFlux_flag_edge"]
 
-    #setup butler
+    # setup butler
     butler = dafPersist.Butler(repo)
 
     for indx, c in enumerate(camcol):
@@ -53,11 +51,11 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
             oldSchema = oldSrc.getSchema()
             mapper = afwTable.SchemaMapper(oldSchema)
             mapper.addMinimalSchema(oldSchema)
+            mapper.addOutputField(afwTable.Field[int]("camcol", "camcol number"))
             newSchema = mapper.getOutputSchema()
-            newSchema.addField("camcol", type=int, doc="camcol number")
             
-            #create the new extented source catalog 
-            srcRef = afwTable.SourceCatalog(newSchema)
+        # create the new extented source catalog 
+        srcRef = afwTable.SourceCatalog(newSchema)
         
         # create temporary catalog
         tmpCat = afwTable.SourceCatalog(srcRef.table)
@@ -71,7 +69,7 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
 
     mag = []
     dist = []
-    for v, f in zip(visits, field):
+    for v, f in zip(visits, fields):
         if v == ref :
             continue
         for indx, c in enumerate(camcol):
@@ -82,32 +80,32 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
                 srcVis.extend(butler.get('src', dataid, immediate=True), False)
             print(len(srcVis), "sources in camcol : ", c)
         
-        match = afwTable.matchRaDec(srcRef, srcVis, afwGeom.Angle(1./3600., afwGeom.degrees))
+        match = afwTable.matchRaDec(srcRef, srcVis, afwGeom.Angle(1, afwGeom.arcseconds))
         matchNum = len(match)
         print("Visit :", v, matchNum, "matches found")
 
-	schemaRef = srcRef.getSchema()
+        schemaRef = srcRef.getSchema()
         schemaVis = srcVis.getSchema()
         extRefKey = schemaRef["base_ClassificationExtendedness_value"].asKey()
         extVisKey = schemaVis["base_ClassificationExtendedness_value"].asKey()
         flagKeysRef = []
         flagKeysVis = []
-        for f in Flags :
-            keyRef = schemaRef[f].asKey()
+        for fl in flags :
+            keyRef = schemaRef[fl].asKey()
             flagKeysRef.append(keyRef)
-            keyVis = schemaVis[f].asKey()
+            keyVis = schemaVis[fl].asKey()
             flagKeysVis.append(keyVis)
         
         for m in match :
             mRef = m.first
             mVis = m.second
             
-            for f in flagKeysRef :
-                if mRef.get(f) :
+            for fl in flagKeysRef :
+                if mRef.get(fl) :
                     continue
-            for f in flagKeysVis :
-            	if mVis.get(f) :
-            	    continue
+            for fl in flagKeysVis :
+                if mVis.get(fl) :
+                    continue
             
             # cleanup the reference sources in order to keep only decent star-like objects
             if mRef.get(extRefKey) >= 1.0 or mVis.get(extVisKey) >= 1.0 :
@@ -134,7 +132,7 @@ def loadData(repo, visits, field, ref, ref_field, camcol, filter) :
         match = matchNum
     )
 
-def check_astrometry(repo, mag, dist, match) :
+def checkAstrometry(repo, mag, dist, match) :
     # Plot angular distance between matched sources from different exposures
     
     plt.rcParams['axes.linewidth'] = 2 
@@ -146,12 +144,12 @@ def check_astrometry(repo, mag, dist, match) :
     ax[0][0].set_xlim([0., 900.])
     ax[0][0].set_xlabel("Distance in mas", fontsize=20)
     ax[0][0].tick_params(labelsize=20)
-    ax[0][0].set_title("Median : %.1f mas"%(np.median(dist)), fontsize=20, x=0.6, y=0.88)
+    ax[0][0].set_title("Median : %.1f mas" % (np.median(dist)), fontsize=20, x=0.6, y=0.88)
     ax[0][1].set_xlabel("Magnitude", fontsize=20)
     ax[0][1].set_ylabel("Distance in mas", fontsize=20)
     ax[0][1].set_ylim([0., 900.])
     ax[0][1].tick_params(labelsize=20)
-    ax[0][1].set_title("Number of matches : %d"%match, fontsize=20)
+    ax[0][1].set_title("Number of matches : %d" % match, fontsize=20)
 
     ax[1][0].hist(dist,bins=150)
     ax[1][0].set_xlim([0.,400.])
@@ -163,7 +161,8 @@ def check_astrometry(repo, mag, dist, match) :
     ax[1][0].tick_params(labelsize=20)
     ax[1][1].tick_params(labelsize=20)
 
-    print("Median value of the astrometric scatter - all magnitudes:", np.median(dist), "mas")
+    print("Median value of the astrometric scatter - all magnitudes:", 
+          np.median(dist), "mas")
 
     good_mag_limit = 19.5
     idxs = np.where(np.asarray(mag) < good_mag_limit)
@@ -191,9 +190,9 @@ def main(repo):
     
     # List of SDSS runs to be considered
     runs = [4192, 6377]
-    field = [300, 399]
+    fields = [300, 399]
 
-    # Reference visit (the other viisits will be compared to this one
+    # Reference visit (the other visits will be compared to this one
     ref = 4192
     ref_field = 300
 
@@ -205,18 +204,18 @@ def main(repo):
     medianRef = 100
     matchRef = 500
     
-    struct = loadData(repo, runs, field, ref, ref_field, camcol, filter)
+    struct = loadData(repo, runs, fields, ref, ref_field, camcol, filter)
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    astromScatter = check_astrometry(repo, mag, dist, match)
+    astromScatter = checkAstrometry(repo, mag, dist, match)
 
     if astromScatter > medianRef :
-	print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas "%(astromScatter, medianRef))
-	sys.exit(99)
+        print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " % (astromScatter, medianRef))
+        sys.exit(99)
     if match < matchRef :
-    	print("Number of matched sources %d is too small (shoud be > %d)"%(match,matchRef))
-    	sys.exit(99)
+        print("Number of matched sources %d is too small (shoud be > %d)" % (match,matchRef))
+        sys.exit(99)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
