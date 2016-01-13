@@ -194,11 +194,21 @@ def plotAstrometry(mag, dist, match, good_mag_limit=19.5) :
     plotPath = os.path.join("astrometry_sdss.png")
     plt.savefig(plotPath, format="png")
 
-def checkAstrometry(mag, dist, match, good_mag_limit=19.5):
+def checkAstrometry(mag, dist, match, 
+                    good_mag_limit=19.5,
+                    medianRef=100, matchRef=500):
     """Print out the astrometric scatter for all stars, and for good stars.
 
+    @param medianRef  Median reference astrometric scatter in arcseconds.
+    @param matchRef   Should match at least matchRef stars.
+
+    Return the astrometric scatter (RMS, arcsec) for all good stars.
+
+    Notes:
+       The scatter and match defaults are appropriate to SDSS are stored here.
     For SDSS, stars with mag < 19.5 should be completely well measured.
     """
+
     print("Median value of the astrometric scatter - all magnitudes:", 
           np.median(dist), "mas")
 
@@ -206,31 +216,25 @@ def checkAstrometry(mag, dist, match, good_mag_limit=19.5):
     astromScatter = np.median(np.asarray(dist)[idxs])
     print("Astrometric scatter (median) - mag < %.1f :" % good_mag_limit, astromScatter, "mas")
 
+    if astromScatter > medianRef :
+        print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " % (astromScatter, medianRef))
+    if match < matchRef :
+        print("Number of matched sources %d is too small (shoud be > %d)" % (match,matchRef))
+
     return astromScatter
     
-def main(repo, runs, fields, ref, ref_field, camcol, filter,
-         medianRef=100, matchRef=500):
+def main(repo, runs, fields, ref, ref_field, camcol, filter):
     """Main executable.  
 
-    @param medianRef  Median reference astrometric scatter in arcseconds.
-    @param matchRef   Should match at least matchRef stars.
-
-    Notes:
-       The scatter and match defaults are appropriate to SDSS are stored here.
     """
 
     struct = loadAndMatchData(repo, runs, fields, ref, ref_field, camcol, filter)
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    astromScatter = checkAstrometry(mag, dist, match)
+    checkAstrometry(mag, dist, match)
 
-    if astromScatter > medianRef :
-        print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " % (astromScatter, medianRef))
-    if match < matchRef :
-        print("Number of matched sources %d is too small (shoud be > %d)" % (match,matchRef))
-
-def setupAndRun(repo):
+def defaultData(repo):
     # List of SDSS runs to be considered
     runs = [4192, 6377]
     fields = [300, 399]
@@ -243,7 +247,7 @@ def setupAndRun(repo):
     camcol = [4]
     filter = 'r'
     
-    main(repo, runs, fields, ref, ref_field, camcol, filter)
+    return runs, fields, ref, ref_field, camcol, filter
     
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -257,4 +261,5 @@ where repo is the path to a repository containing the output of processCcd
         print("Could not find repo %r" % (repo,))
         sys.exit(1)
 
-    setupAndRun(repo)
+    runs, fields, ref, ref_field, camcol, filter = defaultData(repo)
+    main(repo, runs, fields, ref, ref_field, camcol, filter)
