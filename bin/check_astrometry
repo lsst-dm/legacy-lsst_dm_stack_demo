@@ -233,6 +233,7 @@ def main(repo, runs, fields, ref, ref_field, camcol, filter):
     dist = struct.dist
     match = struct.match
     checkAstrometry(mag, dist, match)
+    plotAstrometry(mag, dist, match)
 
 def defaultData(repo):
     # List of SDSS runs to be considered
