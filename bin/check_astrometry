@@ -70,8 +70,8 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
             mapper.addOutputField(afwTable.Field[int]("camcol", "camcol number"))
             newSchema = mapper.getOutputSchema()
             
-        # create the new extented source catalog 
-        srcRef = afwTable.SourceCatalog(newSchema)
+            # create the new extented source catalog 
+            srcRef = afwTable.SourceCatalog(newSchema)
         
         # create temporary catalog
         tmpCat = afwTable.SourceCatalog(srcRef.table)
