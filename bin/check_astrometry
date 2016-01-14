@@ -252,7 +252,7 @@ def defaultData(repo):
     
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("""Usage: astrometry_sdss.py repo
+        print("""Usage: check_astrometry repo
 where repo is the path to a repository containing the output of processCcd
 """)
         sys.exit(1)
