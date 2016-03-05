@@ -46,7 +46,7 @@ done
 
 
 eups list --setup obs_sdss >/dev/null 2>&1 || ( echo "obs_sdss does not appear to be setup, or eups is not configured correctly."; exit 1; )
-type processCcdSdss.py >/dev/null 2>&1 || { echo "Could not find processCcdSdss.py on your path. It is supposed to be in obs_sdss."; exit 1; }
+type processCcd.py >/dev/null 2>&1 || { echo "Could not find processCcd.py on your path. It is supposed to be in obs_sdss."; exit 1; }
 test -d input || { echo "Could not find the 'input' directory. Run this script from the directory where the 'input' subdirectory resides."; exit 1; }
 test -d astrometry_net_data || { echo "Could not find the 'astrometry_net_data' directory."; exit 1; }
 set -e
@@ -57,7 +57,7 @@ setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
 rm -rf output detected-sources.txt output_small detected-sources_small.txt
 # The following config overrides are necessary for the demo to run, until new 'truth' values are computed
 # based on the new stack default of growing footprints and running the deblender. See issue 4801
-processCcdSdss.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --config detection.returnOriginalFootprints=True --config doDeblend=False --output output$SIZE_EXT
+processCcd.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --config calibrate.detectAndMeasure.doDeblend=False --output output$SIZE_EXT
 
 # We need to explicitly run Python here as the command to allow 
 #   the library load path environment to be passed to export-results 
