@@ -8,7 +8,7 @@ if [[ $(uname -s) = Darwin* ]]; then
 fi
 
 # Assumes eups and DM packages: lsst_distrib obs_sdss, are eups-setup.
-source $EUPS_DIR/bin/setups.sh
+source "$EUPS_DIR/bin/setups.sh"
 
 SIZE=""
 SIZE_EXT=""
