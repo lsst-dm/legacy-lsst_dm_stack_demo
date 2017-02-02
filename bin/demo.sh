@@ -24,7 +24,7 @@ usage() {
     echo "  --small : to use a small dataset; otherwise a mini-production size will be used."
     echo "   --help : print this message."
     echo "       -- : an unadorned '--' stops argument processing at that point."
-    exit 
+    exit
 }
 #--------------------------------------------------------------------------
 
@@ -32,12 +32,12 @@ options=(getopt --long small,help -- "$@")
 while true
 do
     case "$1" in
-        --small)   SIZE='small'; 
-                   SIZE_EXT="_small"; 
+        --small)   SIZE='small';
+                   SIZE_EXT="_small";
                    FILTER_SET_4192="g^i^z";
                    FILTER_SET_6377="u^r^i";
                    shift 1 ; break ;;
-        --help)    usage;; 
+        --help)    usage;;
         --)        shift ; break ;;
         *)         [ "$*" != "" ] && usage;
                    break;;
@@ -59,8 +59,8 @@ rm -rf output detected-sources.txt output_small detected-sources_small.txt
 # based on the new stack default of growing footprints and running the deblender. See issue 4801
 processCcd.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --output output$SIZE_EXT
 
-# We need to explicitly run Python here as the command to allow 
-#   the library load path environment to be passed to export-results 
+# We need to explicitly run Python here as the command to allow
+#   the library load path environment to be passed to export-results
 #   on modern OS X versions.
 # The `#!/usr/bin/env python` in the first line of export-results
 #   no longer loads the correct environment.
