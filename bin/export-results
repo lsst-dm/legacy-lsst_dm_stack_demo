@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import print_function
 import re
 import sys
 import numpy as np
@@ -16,7 +18,7 @@ log4j.appender.A1.layout=PatternLayout
 """)
 
 if len(sys.argv) != 2:
-    print >>sys.stderr, "Usage: export-results <output_directory>"
+    print("Usage: export-results <output_directory>", file=sys.stderr)
     exit(1);
 outputdir = sys.argv[1]
 
@@ -63,7 +65,7 @@ for filter in "ugriz":
 
         srcs = butler.get("src", **dataId)
         if not headerPrinted:
-            print '#' + ' '.join(cols)
+            print('#' + ' '.join(cols))
             headerPrinted = True
         vecs = []
         for col in cols:
@@ -81,4 +83,4 @@ for filter in "ugriz":
             vecs.append(v)
 
         for vals in zip(*vecs):
-            print ' '.join([str(el) for el in vals])
+            print(' '.join([str(el) for el in vals]))
