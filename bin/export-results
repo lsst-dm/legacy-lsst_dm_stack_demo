@@ -1,12 +1,11 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import print_function
 import re
 import sys
 import numpy as np
 import lsst.daf.persistence as dafPersist
 import lsst.log
-from lsst.obs.sdss import SdssMapper
-from lsst.afw.geom import Angle
-
 
 lsst.log.configure_prop("""
 log4j.rootLogger=INFO, A1
@@ -16,8 +15,8 @@ log4j.appender.A1.layout=PatternLayout
 """)
 
 if len(sys.argv) != 2:
-    print >>sys.stderr, "Usage: export-results <output_directory>"
-    exit(1);
+    print("Usage: export-results <output_directory>", file=sys.stderr)
+    exit(1)
 outputdir = sys.argv[1]
 
 # Load sources and print interesting columns
@@ -63,7 +62,7 @@ for filter in "ugriz":
 
         srcs = butler.get("src", **dataId)
         if not headerPrinted:
-            print '#' + ' '.join(cols)
+            print('#' + ' '.join(cols))
             headerPrinted = True
         vecs = []
         for col in cols:
@@ -72,7 +71,7 @@ for filter in "ugriz":
             elif re.search(r"\.err\.(xx|yy|xy)$", col):
                 field, which = re.search(r"^(.*\.err)\.(xx|yy|xy)$", col).groups()
                 key = srcs.schema.find(field).key
-                key = key[0,0] if which == "xx" else key[1,1] if which == "yy" else key[0, 1]
+                key = key[0, 0] if which == "xx" else key[1, 1] if which == "yy" else key[0, 1]
 
                 v = srcs.get(key)
             else:
@@ -81,4 +80,4 @@ for filter in "ugriz":
             vecs.append(v)
 
         for vals in zip(*vecs):
-            print ' '.join([str(el) for el in vals])
+            print(' '.join([str(el) for el in vals]))
