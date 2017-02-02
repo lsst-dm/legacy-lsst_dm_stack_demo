@@ -4,8 +4,6 @@ from __future__ import print_function
 
 import argparse
 import os
-import re
-import subprocess
 import sys
 import numpy as np
 
@@ -47,10 +45,12 @@ DTYPE = np.dtype(
      ("base_ClassificationExtendedness_value", float),
      ])
 
+
 def get_array(filename):
     with open(filename, 'r') as f:
         array = np.loadtxt(f, dtype=DTYPE)
     return array
+
 
 def difference(arr1, arr2):
     """
@@ -79,9 +79,10 @@ def difference(arr1, arr2):
     # difference) or one is 0/nan (in which case the absolute difference is
     # already inf).
     divisor = np.where(np.minimum(arr1, arr2) == 0, 1, np.minimum(arr1, arr2))
-    divisor = np.where(np.isnan(divisor),  1, divisor)
+    divisor = np.where(np.isnan(divisor), 1, divisor)
 
     return absDiff, absDiff/np.abs(divisor)
+
 
 def compareWithNumPy(filename, reference, tolerance):
     """
@@ -123,6 +124,7 @@ def compareWithNumPy(filename, reference, tolerance):
                 valid = False
     return valid
 
+
 def determineFlavor():
     """
     Return a string representing the 'flavor' of the local system.
@@ -144,6 +146,7 @@ def determineFlavor():
     else:
         raise RuntimeError("Unknown flavor: (%s, %s)" % (uname, machine))
 
+
 def extantFile(filename):
     """
     Raise ArgumentTypeError if ``filename`` does not exist.
@@ -151,6 +154,7 @@ def extantFile(filename):
     if not os.path.isfile(filename):
         raise argparse.ArgumentTypeError(filename + " is not a file.")
     return filename
+
 
 def referenceFilename(checkFilename):
     """
@@ -163,6 +167,7 @@ def referenceFilename(checkFilename):
     else:
         raise ValueError("Cannot find reference data (looked for %s)." % (guess,))
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', type=extantFile, help="Input data file.")
@@ -172,7 +177,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.reference:
-        args.reference=referenceFilename(args.filename)
+        args.reference = referenceFilename(args.filename)
 
     if compareWithNumPy(args.filename, args.reference, args.tolerance):
         print("Ok.")

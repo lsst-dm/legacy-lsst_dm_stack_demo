@@ -35,7 +35,8 @@ import lsst.afw.table as afwTable
 import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 
-def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
+
+def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
     """Load data from specific visit+field pairs.  Match with reference.
 
     @param repo  The repository.  This is generally the directory on disk
@@ -60,11 +61,12 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
     butler = dafPersist.Butler(repo)
 
     for indx, c in enumerate(camcol):
-        dataid = {'run':ref, 'filter':filter, 'field':ref_field, 'camcol':c}
+        dataid = {'run': ref, 'filter': filter, 'field': ref_field, 'camcol': c}
         oldSrc = butler.get('src', dataid, immediate=True)
         print(len(oldSrc), "sources in camcol :", c)
-        if indx == 0 :
-            # retrieve the schema of the source catalog and extend it in order to add a field to record the camcol number
+        if indx == 0:
+            # retrieve the schema of the source catalog and extend it in order
+            # to add a field to record the camcol number
             oldSchema = oldSrc.getSchema()
             mapper = afwTable.SchemaMapper(oldSchema)
             mapper.addMinimalSchema(oldSchema)
@@ -87,13 +89,13 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
     mag = []
     dist = []
     for v, f in zip(visits, fields):
-        if v == ref :
+        if v == ref:
             continue
         for indx, c in enumerate(camcol):
-            dataid = {'run':v, 'filter':filter, 'field':f, 'camcol':c}
-            if indx == 0 :
+            dataid = {'run': v, 'filter': filter, 'field': f, 'camcol': c}
+            if indx == 0:
                 srcVis = butler.get('src', dataid, immediate=True)
-            else :
+            else:
                 srcVis.extend(butler.get('src', dataid, immediate=True), False)
             print(len(srcVis), "sources in camcol : ", c)
 
@@ -107,25 +109,25 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
         extVisKey = schemaVis["base_ClassificationExtendedness_value"].asKey()
         flagKeysRef = []
         flagKeysVis = []
-        for fl in flags :
+        for fl in flags:
             keyRef = schemaRef[fl].asKey()
             flagKeysRef.append(keyRef)
             keyVis = schemaVis[fl].asKey()
             flagKeysVis.append(keyVis)
 
-        for m in match :
+        for m in match:
             mRef = m.first
             mVis = m.second
 
-            for fl in flagKeysRef :
-                if mRef.get(fl) :
+            for fl in flagKeysRef:
+                if mRef.get(fl):
                     continue
-            for fl in flagKeysVis :
-                if mVis.get(fl) :
+            for fl in flagKeysVis:
+                if mVis.get(fl):
                     continue
 
             # cleanup the reference sources in order to keep only decent star-like objects
-            if mRef.get(extRefKey) >= 1.0 or mVis.get(extVisKey) >= 1.0 :
+            if mRef.get(extRefKey) >= 1.0 or mVis.get(extVisKey) >= 1.0:
                 continue
 
             ang = afwGeom.radToMas(m.distance)
@@ -133,12 +135,11 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
             # retrieve the camcol corresponding to the reference source
             camcolRef = mRef.get('camcol')
             # retrieve the calibration object associated to the camcol
-            did = {'run':ref, 'filter':filter, 'field':ref_field, 'camcol':camcolRef}
+            did = {'run': ref, 'filter': filter, 'field': ref_field, 'camcol': camcolRef}
             md = butler.get("calexp_md", did, immediate=True)
             calib = afwImage.Calib(md)
             # compute magnitude
             refMag = calib.getMagnitude(mRef.get('base_PsfFlux_flux'))
-
 
             mag.append(refMag)
             dist.append(ang)
@@ -149,13 +150,14 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter) :
         match = matchNum
     )
 
-def plotAstrometry(mag, dist, match, good_mag_limit=19.5) :
+
+def plotAstrometry(mag, dist, match, good_mag_limit=19.5):
     """Plot angular distance between matched sources from different exposures."""
 
     plt.rcParams['axes.linewidth'] = 2
     plt.rcParams['mathtext.default'] = 'regular'
 
-    fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(18,22))
+    fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(18, 22))
     ax[0][0].hist(dist, bins=80)
     ax[0][1].scatter(mag, dist, s=10, color='b')
     ax[0][0].set_xlim([0., 900.])
@@ -168,10 +170,10 @@ def plotAstrometry(mag, dist, match, good_mag_limit=19.5) :
     ax[0][1].tick_params(labelsize=20)
     ax[0][1].set_title("Number of matches : %d" % match, fontsize=20)
 
-    ax[1][0].hist(dist,bins=150)
-    ax[1][0].set_xlim([0.,400.])
+    ax[1][0].hist(dist, bins=150)
+    ax[1][0].set_xlim([0., 400.])
     ax[1][1].scatter(mag, dist, s=10, color='b')
-    ax[1][1].set_ylim([0.,400.])
+    ax[1][1].set_ylim([0., 400.])
     ax[1][0].set_xlabel("Distance in mas", fontsize=20)
     ax[1][1].set_xlabel("Magnitude", fontsize=20)
     ax[1][1].set_ylabel("Distance in mas", fontsize=20)
@@ -182,18 +184,21 @@ def plotAstrometry(mag, dist, match, good_mag_limit=19.5) :
 
     ax[2][0].hist(np.asarray(dist)[idxs], bins=100)
     ax[2][0].set_xlabel("Distance in mas - mag < %.1f" % good_mag_limit, fontsize=20)
-    ax[2][0].set_xlim([0,200])
-    ax[2][0].set_title("Median (mag < %.1f) : %.1f mas" % (good_mag_limit, np.median(np.asarray(dist)[idxs])), fontsize=20, x=0.6, y=0.88)
+    ax[2][0].set_xlim([0, 200])
+    ax[2][0].set_title("Median (mag < %.1f) : %.1f mas" %
+                       (good_mag_limit, np.median(np.asarray(dist)[idxs])),
+                       fontsize=20, x=0.6, y=0.88)
     ax[2][1].scatter(np.asarray(mag)[idxs], np.asarray(dist)[idxs], s=10, color='b')
     ax[2][1].set_xlabel("Magnitude", fontsize=20)
     ax[2][1].set_ylabel("Distance in mas - mag < %.1f" % good_mag_limit, fontsize=20)
-    ax[2][1].set_ylim([0.,200.])
+    ax[2][1].set_ylim([0., 200.])
     ax[2][0].tick_params(labelsize=20)
     ax[2][1].tick_params(labelsize=20)
 
     plt.suptitle("Astrometry Check", fontsize=30)
     plotPath = os.path.join("astrometry_sdss.png")
     plt.savefig(plotPath, format="png")
+
 
 def checkAstrometry(mag, dist, match,
                     good_mag_limit=19.5,
@@ -217,12 +222,14 @@ def checkAstrometry(mag, dist, match,
     astromScatter = np.median(np.asarray(dist)[idxs])
     print("Astrometric scatter (median) - mag < %.1f :" % good_mag_limit, astromScatter, "mas")
 
-    if astromScatter > medianRef :
-        print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " % (astromScatter, medianRef))
-    if match < matchRef :
-        print("Number of matched sources %d is too small (shoud be > %d)" % (match,matchRef))
+    if astromScatter > medianRef:
+        print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " %
+              (astromScatter, medianRef))
+    if match < matchRef:
+        print("Number of matched sources %d is too small (shoud be > %d)" % (match, matchRef))
 
     return astromScatter
+
 
 def main(repo, runs, fields, ref, ref_field, camcol, filter):
     """Main executable.
@@ -235,6 +242,7 @@ def main(repo, runs, fields, ref, ref_field, camcol, filter):
     match = struct.match
     checkAstrometry(mag, dist, match)
     plotAstrometry(mag, dist, match)
+
 
 def defaultData(repo):
     # List of SDSS runs to be considered
@@ -250,6 +258,7 @@ def defaultData(repo):
     filter = 'r'
 
     return runs, fields, ref, ref_field, camcol, filter
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
