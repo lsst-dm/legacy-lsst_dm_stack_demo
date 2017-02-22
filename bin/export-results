@@ -66,7 +66,12 @@ for filter in "ugriz":
             headerPrinted = True
         vecs = []
         for col in cols:
-            if col.endswith(".ra") or col.endswith(".dec") or col.endswith("_ra") or col.endswith("_dec"):
+            if col not in srcs.schema:
+                # If the column is not in the source table, we fill it
+                # with a "-". We can therefore check optional columns
+                # like ``flags_negative``.
+                v = ["-"] * len(srcs)
+            elif col.endswith(".ra") or col.endswith(".dec") or col.endswith("_ra") or col.endswith("_dec"):
                 v = np.rad2deg(srcs.get(col))
             elif re.search(r"\.err\.(xx|yy|xy)$", col):
                 field, which = re.search(r"^(.*\.err)\.(xx|yy|xy)$", col).groups()
