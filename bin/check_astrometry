@@ -70,7 +70,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             oldSchema = oldSrc.getSchema()
             mapper = afwTable.SchemaMapper(oldSchema)
             mapper.addMinimalSchema(oldSchema)
-            mapper.addOutputField(afwTable.Field[int]("camcol", "camcol number"))
+            mapper.addOutputField(afwTable.Field[np.int32]("camcol", "camcol number"))
             newSchema = mapper.getOutputSchema()
 
             # create the new extented source catalog
