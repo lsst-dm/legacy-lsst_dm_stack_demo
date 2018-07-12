@@ -1,0 +1,6 @@
+setupRequired(python)
+setupRequired(utils)
+setupRequired(sconsUtils)
+setupRequired(obs_sdss)
+
+envPrepend(PATH, ${PRODUCT_DIR}/bin)
