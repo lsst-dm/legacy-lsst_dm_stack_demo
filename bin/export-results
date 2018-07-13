@@ -81,8 +81,11 @@ for filter in "ugriz":
                 v = srcs.get(key)
             else:
                 v = srcs.get(col)
-
+            v = np.asarray(v)
             vecs.append(v)
 
         for vals in zip(*vecs):
-            print(' '.join([str(el) for el in vals]))
+            # To future proof the comparison, we use an explicit format for floating point types since a
+            # default format could be ambiguous.
+            print(' '.join(['{0:.12g}'.format(el) if issubclass(el.dtype.type, np.floating)
+                            else str(el) for el in vals]))
