@@ -138,6 +138,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             did = {'run': ref, 'filter': filter, 'field': ref_field, 'camcol': camcolRef}
             md = butler.get("calexp_md", did, immediate=True)
             calib = afwImage.Calib(md)
+            calib.setThrowOnNegativeFlux(False)
             # compute magnitude
             refMag = calib.getMagnitude(mRef.get('base_PsfFlux_flux'))
 
@@ -255,7 +256,7 @@ def defaultData(repo):
 
     # List of camcol to be considered (source calalogs will be concateneted)
     camcol = [4]
-    filter = 'r'
+    filter = 'i'
 
     return runs, fields, ref, ref_field, camcol, filter
 
