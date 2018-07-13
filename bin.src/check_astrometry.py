@@ -146,9 +146,9 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             dist.append(ang)
 
     return pipeBase.Struct(
-        mag = mag,
-        dist = dist,
-        match = matchNum
+        mag=mag,
+        dist=dist,
+        match=matchNum
     )
 
 
