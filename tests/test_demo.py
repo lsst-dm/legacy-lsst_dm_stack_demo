@@ -39,10 +39,14 @@ class DemoTestCase(lsst.utils.tests.ExecutablesTestCase):
                               root_dir=executable_dir,
                               args=["--small"],
                               msg="Running demo failed")
-        self.assertExecutable("compare",
+        self.assertExecutable("compare.py",
                               root_dir=executable_dir,
                               args=['detected-sources_small.txt'],
                               msg="Compare failed")
+        self.assertExecutable("check_astrometry.py",
+                              root_dir=executable_dir,
+                              args=['output_small'],
+                              msg="Check astrometry failed")
 
 
 if __name__ == "__main__":
