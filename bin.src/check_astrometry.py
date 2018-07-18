@@ -211,7 +211,9 @@ def checkAstrometry(mag, dist, match,
     @param medianRef  Median reference astrometric scatter in arcseconds.
     @param matchRef   Should match at least matchRef stars.
 
-    Return the astrometric scatter (RMS, arcsec) for all good stars.
+    Return a boolean indicating whether the astrometric scatter was less than
+    the supplied reference, and the astrometric scatter (RMS, arcsec) for all
+    good stars.
 
     Notes:
        The scatter and match defaults are appropriate to SDSS are stored here.
@@ -228,24 +230,29 @@ def checkAstrometry(mag, dist, match,
     if astromScatter > medianRef:
         print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " %
               (astromScatter, medianRef))
+        passed = False
+    else:
+        passed = True
     if match < matchRef:
-        print("Number of matched sources %d is too small (shoud be > %d)" % (match, matchRef))
+        print("Number of matched sources %d is too small (should be > %d)" % (match, matchRef))
 
-    return astromScatter
+    return passed, astromScatter
 
 
 def main(repo, runs, fields, ref, ref_field, camcol, filter, plot=False):
     """Main executable.
 
+    Returns True if the test passed, False otherwise.
     """
 
     struct = loadAndMatchData(repo, runs, fields, ref, ref_field, camcol, filter)
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    checkAstrometry(mag, dist, match)
+    passed, astromScatter = checkAstrometry(mag, dist, match)
     if plot:
         plotAstrometry(mag, dist, match)
+    return passed
 
 
 def defaultData(repo):
@@ -277,4 +284,8 @@ where repo is the path to a repository containing the output of processCcd
         sys.exit(1)
 
     runs, fields, ref, ref_field, camcol, filter = defaultData(repo)
-    main(repo, runs, fields, ref, ref_field, camcol, filter)
+    passed = main(repo, runs, fields, ref, ref_field, camcol, filter)
+    if passed:
+        print("Ok.")
+    else:
+        sys.exit(1)
