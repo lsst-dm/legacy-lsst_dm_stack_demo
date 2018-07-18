@@ -235,6 +235,7 @@ def checkAstrometry(mag, dist, match,
         passed = True
     if match < matchRef:
         print("Number of matched sources %d is too small (should be > %d)" % (match, matchRef))
+        passed = False
 
     return passed, astromScatter
 
@@ -249,7 +250,13 @@ def main(repo, runs, fields, ref, ref_field, camcol, filter, plot=False):
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    passed, astromScatter = checkAstrometry(mag, dist, match)
+
+    # Limit depends on filter
+    medianRef = 100
+    if filter == 'i':
+        medianRef = 105
+
+    passed, astromScatter = checkAstrometry(mag, dist, match, medianRef=medianRef)
     if plot:
         plotAstrometry(mag, dist, match)
     return passed
