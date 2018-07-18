@@ -26,7 +26,6 @@ from __future__ import print_function
 import os.path
 import sys
 
-import matplotlib.pylab as plt
 import numpy as np
 
 import lsst.daf.persistence as dafPersist
@@ -155,6 +154,9 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
 def plotAstrometry(mag, dist, match, good_mag_limit=19.5):
     """Plot angular distance between matched sources from different exposures."""
 
+    # Defer importing of matplotlib until we need it.
+    import matplotlib.pylab as plt
+
     plt.rcParams['axes.linewidth'] = 2
     plt.rcParams['mathtext.default'] = 'regular'
 
@@ -232,7 +234,7 @@ def checkAstrometry(mag, dist, match,
     return astromScatter
 
 
-def main(repo, runs, fields, ref, ref_field, camcol, filter):
+def main(repo, runs, fields, ref, ref_field, camcol, filter, plot=False):
     """Main executable.
 
     """
@@ -242,7 +244,8 @@ def main(repo, runs, fields, ref, ref_field, camcol, filter):
     dist = struct.dist
     match = struct.match
     checkAstrometry(mag, dist, match)
-    plotAstrometry(mag, dist, match)
+    if plot:
+        plotAstrometry(mag, dist, match)
 
 
 def defaultData(repo):
