@@ -26,7 +26,6 @@ from __future__ import print_function
 import os.path
 import sys
 
-import matplotlib.pylab as plt
 import numpy as np
 
 import lsst.daf.persistence as dafPersist
@@ -138,6 +137,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             did = {'run': ref, 'filter': filter, 'field': ref_field, 'camcol': camcolRef}
             md = butler.get("calexp_md", did, immediate=True)
             calib = afwImage.Calib(md)
+            calib.setThrowOnNegativeFlux(False)
             # compute magnitude
             refMag = calib.getMagnitude(mRef.get('base_PsfFlux_flux'))
 
@@ -145,14 +145,17 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             dist.append(ang)
 
     return pipeBase.Struct(
-        mag = mag,
-        dist = dist,
-        match = matchNum
+        mag=mag,
+        dist=dist,
+        match=matchNum
     )
 
 
 def plotAstrometry(mag, dist, match, good_mag_limit=19.5):
     """Plot angular distance between matched sources from different exposures."""
+
+    # Defer importing of matplotlib until we need it.
+    import matplotlib.pylab as plt
 
     plt.rcParams['axes.linewidth'] = 2
     plt.rcParams['mathtext.default'] = 'regular'
@@ -208,7 +211,9 @@ def checkAstrometry(mag, dist, match,
     @param medianRef  Median reference astrometric scatter in arcseconds.
     @param matchRef   Should match at least matchRef stars.
 
-    Return the astrometric scatter (RMS, arcsec) for all good stars.
+    Return a boolean indicating whether the astrometric scatter was less than
+    the supplied reference, and the astrometric scatter (RMS, arcsec) for all
+    good stars.
 
     Notes:
        The scatter and match defaults are appropriate to SDSS are stored here.
@@ -225,23 +230,36 @@ def checkAstrometry(mag, dist, match,
     if astromScatter > medianRef:
         print("Median astrometric scatter %.1f mas is larger than reference : %.1f mas " %
               (astromScatter, medianRef))
+        passed = False
+    else:
+        passed = True
     if match < matchRef:
-        print("Number of matched sources %d is too small (shoud be > %d)" % (match, matchRef))
+        print("Number of matched sources %d is too small (should be > %d)" % (match, matchRef))
+        passed = False
 
-    return astromScatter
+    return passed, astromScatter
 
 
-def main(repo, runs, fields, ref, ref_field, camcol, filter):
+def main(repo, runs, fields, ref, ref_field, camcol, filter, plot=False):
     """Main executable.
 
+    Returns True if the test passed, False otherwise.
     """
 
     struct = loadAndMatchData(repo, runs, fields, ref, ref_field, camcol, filter)
     mag = struct.mag
     dist = struct.dist
     match = struct.match
-    checkAstrometry(mag, dist, match)
-    plotAstrometry(mag, dist, match)
+
+    # Limit depends on filter
+    medianRef = 100
+    if filter == 'i':
+        medianRef = 105
+
+    passed, astromScatter = checkAstrometry(mag, dist, match, medianRef=medianRef)
+    if plot:
+        plotAstrometry(mag, dist, match)
+    return passed
 
 
 def defaultData(repo):
@@ -255,7 +273,7 @@ def defaultData(repo):
 
     # List of camcol to be considered (source calalogs will be concateneted)
     camcol = [4]
-    filter = 'r'
+    filter = 'i'
 
     return runs, fields, ref, ref_field, camcol, filter
 
@@ -273,4 +291,8 @@ where repo is the path to a repository containing the output of processCcd
         sys.exit(1)
 
     runs, fields, ref, ref_field, camcol, filter = defaultData(repo)
-    main(repo, runs, fields, ref, ref_field, camcol, filter)
+    passed = main(repo, runs, fields, ref, ref_field, camcol, filter)
+    if passed:
+        print("Ok.")
+    else:
+        sys.exit(1)

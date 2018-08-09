@@ -14,7 +14,7 @@ Usage
 To run the example, do::
 
 	$ source $LSST_HOME/loadLSST.sh
-	$ setup obs_sdss
+	$ setup -r .
 	$ ./bin/demo.sh  (or: "./bin/demo.sh --small"  if local memory is constrained)
 
 where $LSST_HOME is the directory where your LSST DM stack resides.
@@ -35,7 +35,7 @@ output; choose a result set appropriate for your system. The ./bin/compare
 script can then be used to check if your results are within the expected
 numerical tolerances::
 
-    $ python bin/compare detected-sources.txt
+    $ python bin/compare.py detected-sources.txt
     Ok.
 
 If you use the "--small" run option then the corresponding output file is
@@ -44,7 +44,7 @@ called "output_small".
 
 Check the astrometric relative RMS with::
 
-    $ python bin/check_astrometry output
+    $ python bin/check_astrometry.py output
 
 Included Data
 -------------
