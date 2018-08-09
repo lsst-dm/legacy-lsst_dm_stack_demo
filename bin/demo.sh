@@ -64,7 +64,7 @@ processCcd.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --i
 #   on modern OS X versions.
 # The `#!/usr/bin/env python` in the first line of export-results
 #   no longer loads the correct environment.
-python ./bin/export-results.py output$SIZE_EXT > detected-sources$SIZE_EXT.txt
+python ./bin.src/export-results.py output$SIZE_EXT > detected-sources$SIZE_EXT.txt
 
 echo
 echo "Processing completed successfully. The results are in detected-sources$SIZE_EXT.txt."
