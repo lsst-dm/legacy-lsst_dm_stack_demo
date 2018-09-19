@@ -139,7 +139,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             calib = afwImage.Calib(md)
             calib.setThrowOnNegativeFlux(False)
             # compute magnitude
-            refMag = calib.getMagnitude(mRef.get('base_PsfFlux_flux'))
+            refMag = calib.getMagnitude(mRef.get('base_PsfFlux_instFlux'))
 
             mag.append(refMag)
             dist.append(ang)
