@@ -1,4 +1,5 @@
 .cache
+.pytest_cache
 pytest_session.txt
 output
 output_small
