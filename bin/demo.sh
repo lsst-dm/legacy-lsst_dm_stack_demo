@@ -52,7 +52,7 @@ test -d astrometry_net_data || { echo "Could not find the 'astrometry_net_data' 
 set -e
 
 # Tell the stack where to find astrometric reference catalogs
-setup --nolocks -v -r ./astrometry_net_data astrometry_net_data
+setup --nolocks -v -k -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt output_small detected-sources_small.txt
 # The following config overrides are necessary for the demo to run, until new 'truth' values are computed
