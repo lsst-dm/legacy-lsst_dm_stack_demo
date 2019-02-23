@@ -55,9 +55,11 @@ set -e
 setup --nolocks -v -k -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt output_small detected-sources_small.txt
+# Reconfigure to use the a.net reference catalog
+CONFIG=config/processCcd.py
 # The following config overrides are necessary for the demo to run, until new 'truth' values are computed
 # based on the new stack default of growing footprints and running the deblender. See issue 4801
-processCcd.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --output output$SIZE_EXT
+processCcd.py input --id run=4192 filter=$FILTER_SET_4192 camcol=4 field=300 --id run=6377 filter=$FILTER_SET_6377 camcol=4 field=399 --output output$SIZE_EXT --configfile=$CONFIG
 
 # We need to explicitly run Python here as the command to allow
 #   the library load path environment to be passed to export-results
