@@ -32,7 +32,6 @@ import lsst.daf.persistence as dafPersist
 import lsst.pipe.base as pipeBase
 import lsst.afw.table as afwTable
 import lsst.afw.geom as afwGeom
-import lsst.afw.image as afwImage
 
 
 def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
@@ -135,11 +134,9 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             camcolRef = mRef.get('camcol')
             # retrieve the calibration object associated to the camcol
             did = {'run': ref, 'filter': filter, 'field': ref_field, 'camcol': camcolRef}
-            md = butler.get("calexp_md", did, immediate=True)
-            calib = afwImage.Calib(md)
-            calib.setThrowOnNegativeFlux(False)
+            photoCalib = butler.get("calexp_photoCalib", did)
             # compute magnitude
-            refMag = calib.getMagnitude(mRef.get('base_PsfFlux_instFlux'))
+            refMag = photoCalib.instFluxToMagnitude(mRef.get('base_PsfFlux_instFlux'))
 
             mag.append(refMag)
             dist.append(ang)
