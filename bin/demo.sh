@@ -48,14 +48,11 @@ done
 eups list --setup obs_sdss >/dev/null 2>&1 || ( echo "obs_sdss does not appear to be setup, or eups is not configured correctly."; exit 1; )
 type processCcd.py >/dev/null 2>&1 || { echo "Could not find processCcd.py on your path. It is supposed to be in obs_sdss."; exit 1; }
 test -d input || { echo "Could not find the 'input' directory. Run this script from the directory where the 'input' subdirectory resides."; exit 1; }
-test -d astrometry_net_data || { echo "Could not find the 'astrometry_net_data' directory."; exit 1; }
 set -e
 
-# Tell the stack where to find astrometric reference catalogs
-setup --nolocks -v -k -r ./astrometry_net_data astrometry_net_data
 
 rm -rf output detected-sources.txt output_small detected-sources_small.txt
-# Reconfigure to use the a.net reference catalog
+# Reconfigure to use the included reference catalog
 CONFIG=config/processCcd.py
 # The following config overrides are necessary for the demo to run, until new 'truth' values are computed
 # based on the new stack default of growing footprints and running the deblender. See issue 4801
