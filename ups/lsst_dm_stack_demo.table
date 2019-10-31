@@ -2,6 +2,5 @@ setupRequired(python)
 setupRequired(utils)
 setupRequired(sconsUtils)
 setupRequired(obs_sdss)
-setupRequired(meas_extensions_astrometryNet)
 
 envPrepend(PATH, ${PRODUCT_DIR}/bin)
