@@ -171,7 +171,7 @@ def referenceFilename(checkFilename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', type=extantFile, help="Input data file.")
-    parser.add_argument('--tolerance', default=0, type=float, help="Tolerance for errors. "
+    parser.add_argument('--tolerance', default=1e-10, type=float, help="Tolerance for errors. "
                         "The test will fail if both the relative and absolute errors exceed the tolerance.")
     parser.add_argument('--reference', type=extantFile, help="Reference data for comparison.")
     args = parser.parse_args()
