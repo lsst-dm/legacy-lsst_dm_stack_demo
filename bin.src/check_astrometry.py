@@ -31,7 +31,7 @@ import numpy as np
 import lsst.daf.persistence as dafPersist
 import lsst.pipe.base as pipeBase
 import lsst.afw.table as afwTable
-import lsst.afw.geom as afwGeom
+import lsst.geom as geom
 
 
 def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
@@ -97,7 +97,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
                 srcVis.extend(butler.get('src', dataid, immediate=True), False)
             print(len(srcVis), "sources in camcol : ", c)
 
-        match = afwTable.matchRaDec(srcRef, srcVis, afwGeom.Angle(1, afwGeom.arcseconds))
+        match = afwTable.matchRaDec(srcRef, srcVis, geom.Angle(1, geom.arcseconds))
         matchNum = len(match)
         print("Visit :", v, matchNum, "matches found")
 
@@ -128,7 +128,7 @@ def loadAndMatchData(repo, visits, fields, ref, ref_field, camcol, filter):
             if mRef.get(extRefKey) >= 1.0 or mVis.get(extVisKey) >= 1.0:
                 continue
 
-            ang = afwGeom.radToMas(m.distance)
+            ang = geom.radToMas(m.distance)
 
             # retrieve the camcol corresponding to the reference source
             camcolRef = mRef.get('camcol')
