@@ -12,3 +12,7 @@ config.calibrate.connections.astromRefCat = "sdss_demo_ref_cat"
 config.calibrate.connections.photoRefCat = "sdss_demo_ref_cat"
 
 config.calibrate.photoCal.photoCatName = "sdss_demo_ref_cat"
+
+# This config switches off Sky Sources generation
+# required to ensure that reference catalogs match generated catalogs
+config.calibrate.doSkySources = False
