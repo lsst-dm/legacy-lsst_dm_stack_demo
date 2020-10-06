@@ -35,7 +35,7 @@ output; choose a result set appropriate for your system. The ./bin/compare
 script can then be used to check if your results are within the expected
 numerical tolerances::
 
-    $ python bin/compare.py detected-sources.txt
+    $ ./bin/compare detected-sources.txt
     Ok.
 
 If you use the "--small" run option then the corresponding output file is
